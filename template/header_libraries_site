@@ -1,0 +1,22 @@
+<script>
+\$(function() {
+   var return_count;
+    \$("#detail").keypress(function (e) {
+        if(e.which == 13) {
+            return_count++;
+            if (return_count == 3) {
+                \$("#noteform").submit();
+            }
+        } else {
+            return_count = 0;
+        }
+
+        if(e.which == 13 && e.shiftKey) {
+            //alert('boop!');
+            //console.log('Enter!');
+            \$("#noteform").submit();
+            e.preventDefault();
+        }
+    });
+});
+</script>
