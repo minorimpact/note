@@ -1,6 +1,8 @@
+<!-- TEMPLATE:note.object -->
 [% object.get('detail') %]
 [% FOREACH tag IN object.tags() %]
     [% INCLUDE tag %]
 [% END %]
 <a href='[% script_name %]?id=[% object.id() %]&a=edit'>Edit</a>
+<a href='[% script_name %]?id=[% object.id() %]&a=archive'>Archive</a>
 <a href='[% script_name %]?id=[% object.id() %]&a=delete'>Delete</a>

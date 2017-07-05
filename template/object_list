@@ -1,6 +1,8 @@
+<!-- TEMPLATE:note.object_list -->
 <tr>
     <td>[% object.name({markdown=>1, truncate=>120}) %]</td>
     <td>[% FOREACH tag IN object.tags() %] [% INCLUDE tag %] [% END %]</td>
     <td><a href='[% script_name %]?id=[% object.id() %]&a=edit'>Edit</a></td>
+    <td><a href='[% script_name %]?id=[% object.id() %]&cid=[% container_id %]&a=archive'>Archive</a></td>
     <td><a href='[% script_name %]?id=[% object.id() %]&a=delete'>Delete</a></td>
 </tr>
