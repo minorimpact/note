@@ -4,8 +4,8 @@ use MinorImpact;
 
 use note;
 
-my $MI = new MinorImpact({https=>1, valid_user=>1, config_file=>"../conf/minorimpact.conf"});
-$MI->cgi({ script => 'index', actions => {archive => \&archive }, tag=>'new' });
+my $MI = new MinorImpact({ https => 1, config_file => "../conf/minorimpact.conf" });
+$MI->cgi({ actions => {archive => \&archive }, tag=>'new' });
 
 sub archive {
     my $MINORIMPACT = shift || return;
