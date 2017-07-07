@@ -1,3 +1,4 @@
+<!-- TEMPLATE:note.header_site -->
 <script>
 \$(function() {
    var return_count;
