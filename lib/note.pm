@@ -67,6 +67,8 @@ sub name {
     my $params = shift || {};
 
     my $local_params = cloneHash($params);
+    $local_params->{one_line} = 1;
+    $local_params->{truncate} = 120;
     return $self->get('detail', $local_params);
 }
 
@@ -74,14 +76,14 @@ sub toString {
     my $self = shift || return;
     my $params = shift || {};
 
-    if ($params->{format} eq 'list') {
-        my $row;
-        my $TT = MinorImpact::getTT();
-        $TT->process('object_list', {object=>$self}, \$row) || die $TT->error();
-        return $row;
-    } else {
+    #if ($params->{format} eq 'list') {
+    #    my $row;
+    #    my $TT = MinorImpact::getTT();
+    #    $TT->process('object_list', {object=>$self}, \$row) || die $TT->error();
+    #    return $row;
+    #} else {
         return $self->SUPER::toString($params);
-    }
+    #}
 }
 
 #sub toString {

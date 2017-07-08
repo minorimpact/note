@@ -1,7 +1,30 @@
 <!-- TEMPLATE:note.list_menu_site -->
+<script>
+\$(function() {
+   var return_count = 0;
+    \$("#detail").keypress(function (e) {
+        if(e.which == 13) {
+            return_count++;
+            if (return_count == 3) {
+                \$("#noteform").submit();
+            }
+        } else {
+            return_count = 0;
+        }
+
+        if(e.which == 13 && e.shiftKey) {
+            //alert('boop!');
+            //console.log('Enter!');
+            \$("#noteform").submit();
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
 <form class='w3-container' id=noteform name=noteform method=POST action='[% script_name %]'>
 <input name=action type=hidden value='add'>
 <input name=type_id type=hidden value='note'>
 <input id=hidden_submit type=hidden name=hidden_submit value=1>
-<textarea class='w3-input w3-textarea' id=detail name=detail></textarea>
+<textarea class='w3-input w3-border-0' id=detail name=detail></textarea>
 </form>

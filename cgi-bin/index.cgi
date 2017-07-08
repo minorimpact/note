@@ -5,7 +5,7 @@ use MinorImpact;
 use note;
 
 my $MI = new MinorImpact({ https => 1, config_file => "../conf/minorimpact.conf" });
-$MI->cgi({ actions => { archive => \&archive, edit => \&edit }, tag=>'new' });
+$MI->cgi({ actions => { archive => \&archive, edit => \&edit, index => \&index }, tag=>'new' });
 
 sub archive {
     my $MINORIMPACT = shift || return;
@@ -48,4 +48,15 @@ sub edit {
     
     $params->{no_name} = 1;
     MinorImpact::CGI::edit($MINORIMPACT, $params);
+}
+
+sub index {
+    my $MINORIMPACT = shift || return;
+    my $params = shift ||{};
+
+    my $CGI = MinorImpact::getCGI();
+
+    $CGI->param('search', 'tag:new') unless ($CGI->param('search'));
+
+    MinorImpact::CGI::index($MINORIMPACT);
 }
