@@ -55,8 +55,54 @@ sub index {
     my $params = shift ||{};
 
     my $CGI = MinorImpact::getCGI();
+    my $TT = MinorImpact::getTT();
+    my $user = MinorImpact::getUser({ force => 1 });
 
-    $CGI->param('search', 'tag:new') unless ($CGI->param('search'));
+    my $collection_id = $CGI->param('cid');
+    my $limit = $CGI->param('limit') || 30;
+    my $page = $CGI->param('page') || 1;
+    my $search = $CGI->param('search');
+    my $type_id = MinorImpact::Object::typeID('noet');
 
-    MinorImpact::CGI::index($MINORIMPACT);
+    my $local_params = {object_type_id=>$type_id, sort=>1, debug=> "note::index.cgi::index();", user => $user->id() };
+
+    my @collections = $user->getCollections();
+    my $collection = new MinorImpact::Object($collection_id) if ($collection_id);
+    if ($collection) {
+        $search = $collection->searchText();
+    }
+   
+    if ($search) {
+        $local_params->{search} = $search;
+    } else {
+        $local_params->{tag} = "new";
+    }
+    $local_params->{debug} .= "collection::searchParams();";
+    $local_params->{page} = $page;
+    $local_params->{limit} = $limit + 1;
+
+    #my $max = scalar(MinorImpact::Object::Search::search({ %$local_params, id_only => 1 }));
+    my @objects = MinorImpact::Object::Search::search($local_params);
+
+    #my @tags;
+    #my %tags;
+    #foreach my $object (@objects) {
+    #    map { $tags{$_}++; } $object->getTags();
+    #}
+    #@tags = reverse sort { $tags{$a} <=> $tags{$b}; } keys %tags;
+    #splice(@tags, 5);
+
+    my $url_last = $page>1?"$script_name?cid=$collection_id&page=" . ($page - 1):'';
+    my $url_next = (scalar(@objects)>$limit)?"$script_name?cid=$collection_id&page=" . ($page + 1):'';
+    pop(@objects);
+    #MinorImpact::CGI::index($MINORIMPACT);
+    $TT->process('index', {
+                            collections => [ @collections ],
+                            objects     => [ @objects ],
+                            search      => $search,
+                            type_id     => $type_id,
+                            type_name   => 'note',
+                            url_last    => $url_last,
+                            url_next    => $url_next,
+                        }) || die $TT->error();
 }
