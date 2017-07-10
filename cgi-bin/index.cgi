@@ -62,7 +62,7 @@ sub index {
     my $limit = $CGI->param('limit') || 30;
     my $page = $CGI->param('page') || 1;
     my $search = $CGI->param('search');
-    my $type_id = MinorImpact::Object::typeID('noet');
+    my $type_id = MinorImpact::Object::typeID('note');
 
     my $local_params = {object_type_id=>$type_id, sort=>1, debug=> "note::index.cgi::index();", user => $user->id() };
 
@@ -78,6 +78,7 @@ sub index {
         $local_params->{tag} = "new";
     }
     $local_params->{debug} .= "collection::searchParams();";
+    $local_params->{user_id} = $user->id();
     $local_params->{page} = $page;
     $local_params->{limit} = $limit + 1;
 
