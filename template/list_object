@@ -1,17 +1,13 @@
 [% INCLUDE pagination %]
 [% FOREACH object IN objects %]
 <div class="w3-container w3-row">
-    [% object.name() %]
-</div>
-<div class="w3-container w3-row">
-    <div class="w3-col s4">
-        <a href='[% script_name %]?id=[% object.id() %]&a=edit&search=[% search %]'>Edit</a>
+    <div class="w3-col w3-right">
+        <a href='[% script_name %]?id=[% object.id() %]&a=edit&search=[% search %]'><i class="fa fa-edit"></i></a>
+        <a href='[% script_name %]?id=[% object.id() %]&a=archive&search=[% search %]'><i class="fa fa-archive"></i></a>
+        <a href='[% script_name %]?id=[% object.id() %]&a=delete&search=[% search %]'><i class="fa fa-trash"></i></a>
     </div>
-    <div class="w3-col s4">
-        <a href='[% script_name %]?id=[% object.id() %]&a=archive&cid=[% collection_id %]&search=[% search %]'>Archive</a>
-    </div>
-    <div class="w3-col s4">
-        <a href='[% script_name %]?id=[% object.id() %]&a=delete&search=[% search %]'>Delete</a>
+    <div class="w3-col" onclick="document.location='[% script_name %]?id=[% object.id() %]&a=note';">
+        <div>[% object.name() %]</div>
     </div>
 </div>
 <div class="w3-container w3-row">

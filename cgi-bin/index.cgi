@@ -5,7 +5,7 @@ use MinorImpact;
 use note;
 
 my $MI = new MinorImpact({ https => 1, config_file => "../conf/minorimpact.conf" });
-$MI->cgi({ actions => { archive => \&archive, edit => \&edit, index => \&index }, tag=>'new' });
+$MI->cgi({ actions => { archive => \&archive, edit => \&edit, index => \&index, note => \&note }, tag=>'new' });
 
 sub archive {
     my $MINORIMPACT = shift || return;
@@ -95,7 +95,7 @@ sub index {
 
     my $url_last = $page>1?"$script_name?cid=$collection_id&page=" . ($page - 1):'';
     my $url_next = (scalar(@objects)>$limit)?"$script_name?cid=$collection_id&page=" . ($page + 1):'';
-    pop(@objects);
+    pop(@objects) if ($url_next);
     #MinorImpact::CGI::index($MINORIMPACT);
     $TT->process('index', {
                             collections => [ @collections ],
@@ -105,5 +105,25 @@ sub index {
                             type_name   => 'note',
                             url_last    => $url_last,
                             url_next    => $url_next,
+                        }) || die $TT->error();
+}
+
+sub note {
+    my $MINORIMPACT = shift || return;
+    my $params = shift ||{};
+
+    my $CGI = MinorImpact::getCGI();
+    my $TT = MinorImpact::getTT();
+    my $user = MinorImpact::getUser({ force => 1 });
+
+    my $object_id = $CGI->param('id') || $MINORIMPACT->redirect();
+    my $object = new MinorImpact::Object($object_id) || $MINORIMPACT->redirect();
+
+    my @collections = $user->getCollections();
+
+    $TT->process('note', {
+                            collections => [ @collections ],
+                            object      => $object,
+                            type_name   => 'note',
                         }) || die $TT->error();
 }
