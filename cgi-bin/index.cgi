@@ -14,8 +14,9 @@ sub archive {
     #MinorImpact::log(7, "starting");
     my $CGI = $MINORIMPACT->getCGI();
 
-    my $object_id = $CGI->param('object_id') || $CGI->param('id') || $MINORIMPACT->redirect();
     my $collection_id = $CGI->param('collection_id') || $CGI->param('cid');
+    my $object_id = $CGI->param('object_id') || $CGI->param('id') || $MINORIMPACT->redirect();
+    my $search = $CGI->param('search');
 
     my $object = new MinorImpact::Object($object_id) || $MINORIMPACT->redirect();
 
@@ -23,7 +24,7 @@ sub archive {
     #MinorImpact::log(8, "\@tags='" . join(",", @tags) . "'");
     $object->update({ tags => join(",", @tags) });
 
-    $MINORIMPACT->redirect("?cid=$collection_id");
+    $MINORIMPACT->redirect("?cid=$collection_id&search=$search");
 }
 
 sub edit {
@@ -82,19 +83,10 @@ sub index {
     $local_params->{page} = $page;
     $local_params->{limit} = $limit + 1;
 
-    #my $max = scalar(MinorImpact::Object::Search::search({ %$local_params, id_only => 1 }));
     my @objects = MinorImpact::Object::Search::search($local_params);
 
-    #my @tags;
-    #my %tags;
-    #foreach my $object (@objects) {
-    #    map { $tags{$_}++; } $object->getTags();
-    #}
-    #@tags = reverse sort { $tags{$a} <=> $tags{$b}; } keys %tags;
-    #splice(@tags, 5);
-
-    my $url_last = $page>1?"$script_name?cid=$collection_id&page=" . ($page - 1):'';
-    my $url_next = (scalar(@objects)>$limit)?"$script_name?cid=$collection_id&page=" . ($page + 1):'';
+    my $url_last = $page>1?"$script_name?cid=$collection_id&search=$serach&page=" . ($page - 1):'';
+    my $url_next = (scalar(@objects)>$limit)?"$script_name?cid=$collection_id&search=$search&page=" . ($page + 1):'';
     pop(@objects) if ($url_next);
     #MinorImpact::CGI::index($MINORIMPACT);
     $TT->process('index', {

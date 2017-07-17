@@ -1,6 +1,0 @@
-[% INCLUDE header %]
-
-[% INCLUDE note_quickadd %]
-[% INCLUDE list_object %]
-
-[% INCLUDE footer %]
