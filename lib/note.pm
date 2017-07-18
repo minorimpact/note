@@ -30,7 +30,7 @@ sub new {
         }
 
         $params->{tags} .= " " . join(" ", @tags) . " new";
-        MinorImpact::log(8, "\$params->{tags}='" . $params->{tags} . "'");
+       #MinorImpact::log(8, "\$params->{tags}='" . $params->{tags} . "'");
     }
     my $self = $package->SUPER::_new($params);
     bless($self, $package);
