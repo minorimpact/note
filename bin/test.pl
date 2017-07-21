@@ -13,9 +13,10 @@ use note;
 
 my $test_count = 10;
 my $MAX_CHILD_COUNT = 3;
+my $verbose = 0;
 my $start_time = [gettimeofday];
-my %child;
 
+my %child;
 my $i = 0;
 while ($i++ < $test_count) {
     my $pid;
@@ -40,20 +41,15 @@ my $avg_time = $total_time/$test_count;
 #print "avg_time=$avg_time\n";
 MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "test_avg", value => $avg_time });
 
-
 my $MINORIMPACT = new MinorImpact({ config_file => "/usr/local/www/note.minorimpact.com/conf/minorimpact.conf" });
 my $DB = $MinorImpact::SELF->{DB};
 my $USERDB = $MinorImpact::SELF->{USERDB};
 my $user_count = $USERDB->selectrow_array("SELECT count(*) FROM user");
 my $note_count = $DB->selectrow_array("SELECT count(*) FROM object WHERE object_type_id=?", undef, (MinorImpact::Object::typeID('note')));
-#print "user_count=$user_count\n";
+print "user_count=$user_count\n" if ($verbose);
 MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "user_count", value => $user_count });
-#print "note_count=$note_count\n";
+print "note_count=$note_count\n" if ($verbose);
 MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "note_count", value => $note_count });
-#print "avg_time_per_user=" . ($avg_time/$user_count) . "\n" if ($avg_time && $user_count);
-MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "test_avg_per_user", value => ($avg_time/$user_count) }) if ($user_count);
-#print "avg_time_per_note=" . ($avg_time/$note_count) . "\n" if ($avg_time && $note_count);
-MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "test_avg_per_note", value => ($avg_time/$note_count) }) if ($note_count);
 
 sub test {
     my $test_start_time = [gettimeofday];

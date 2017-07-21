@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use MinorImpact;
+use MinorImpact::Util;
 
 use note;
 
@@ -65,7 +66,6 @@ sub index {
     my $search = $CGI->param('search');
     my $type_id = MinorImpact::Object::typeID('note');
 
-    my $local_params = {object_type_id=>$type_id, sort=>1, debug=> "note::index.cgi::index();", user => $user->id() };
 
     my @collections = $user->getCollections();
     my $collection = new MinorImpact::Object($collection_id) if ($collection_id);
@@ -73,15 +73,15 @@ sub index {
         $search = $collection->searchText();
     }
    
+    my $local_params = {object_type_id=>$type_id, sort=>1, debug=> "note::index.cgi::index();" };
+    $local_params->{user_id} = $user->id();
+    $local_params->{page} = $page;
+    $local_params->{limit} = $limit + 1;
     if ($search) {
         $local_params->{search} = $search;
     } else {
         $local_params->{tag} = "new";
     }
-    $local_params->{debug} .= "collection::searchParams();";
-    $local_params->{user_id} = $user->id();
-    $local_params->{page} = $page;
-    $local_params->{limit} = $limit + 1;
 
     my @objects = MinorImpact::Object::Search::search($local_params);
 
