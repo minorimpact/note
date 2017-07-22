@@ -64,6 +64,7 @@ sub index {
     my $limit = $CGI->param('limit') || 30;
     my $page = $CGI->param('page') || 1;
     my $search = $CGI->param('search');
+    my $sort = $CGI->param('sort') || -1;
     my $type_id = MinorImpact::Object::typeID('note');
 
 
@@ -74,9 +75,10 @@ sub index {
     }
    
     my $local_params = {object_type_id=>$type_id, sort=>1, debug=> "note::index.cgi::index();" };
-    $local_params->{user_id} = $user->id();
-    $local_params->{page} = $page;
     $local_params->{limit} = $limit + 1;
+    $local_params->{page} = $page;
+    $local_params->{sort} = $sort;
+    $local_params->{user_id} = $user->id();
     if ($search) {
         $local_params->{search} = $search;
     } else {
@@ -93,6 +95,7 @@ sub index {
                             collections => [ @collections ],
                             objects     => [ @objects ],
                             search      => $search,
+                            sort        => $sort,
                             type_id     => $type_id,
                             type_name   => 'note',
                             url_last    => $url_last,
@@ -113,7 +116,7 @@ sub note {
 
     my @collections = $user->getCollections();
 
-    $TT->process('note', {
+    $TT->process('index', {
                             collections => [ @collections ],
                             object      => $object,
                             type_name   => 'note',

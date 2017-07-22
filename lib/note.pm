@@ -86,6 +86,17 @@ sub toString {
     #}
 }
 
+sub cmp {
+    my $self = shift || return;
+    my $b = shift;
+
+    if ($b) {
+        return ($self->get('mod_date') cmp $b->cmp());
+    }
+
+    return $self->get('mod_date');
+}
+
 #sub toString {
     #my $self = shift || return;
     #my $params = shift || {};

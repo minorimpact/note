@@ -41,7 +41,7 @@ my $avg_time = $total_time/$test_count;
 #print "avg_time=$avg_time\n";
 MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "test_avg", value => $avg_time });
 
-my $MINORIMPACT = new MinorImpact({ config_file => "/usr/local/www/note.minorimpact.com/conf/minorimpact.conf" });
+my $MINORIMPACT = new MinorImpact({ config_file => "/usr/local/www/note.minorimpact.com/conf/minorimpact.conf", no_log => 1 });
 my $DB = $MinorImpact::SELF->{DB};
 my $USERDB = $MinorImpact::SELF->{USERDB};
 my $user_count = $USERDB->selectrow_array("SELECT count(*) FROM user");
@@ -53,7 +53,7 @@ MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "note_count", va
 
 sub test {
     my $test_start_time = [gettimeofday];
-    my $MINORIMPACT = new MinorImpact({ config_file => "/usr/local/www/note.minorimpact.com/conf/minorimpact.conf" });
+    my $MINORIMPACT = new MinorImpact({ config_file => "/usr/local/www/note.minorimpact.com/conf/minorimpact.conf", no_log => 1 });
     my $password = time() . $$ . int(rand(100)) ;
     my $username = "test_user_note_$password";
     #print "adding test_user $username\n";
