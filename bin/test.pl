@@ -75,20 +75,20 @@ sub test {
     }
 
     #Search for all added notes.
-    my @notes = MinorImpact::Object::Search::search({ 
+    my @notes = MinorImpact::Object::Search::search({ query => { 
                                                         object_type_id => MinorImpact::Object::typeID('note'), 
                                                         user_id => $user->id(),
-                                                    });
+                                                    } });
     if (scalar(@notes) != $note_count) {
         #print "note count mismatch: '$note_count' != '" . scalar(@notes) . "'\n";
     }
 
     # Tag search
-    @notes = MinorImpact::Object::Search::search({ 
+    @notes = MinorImpact::Object::Search::search({ query => { 
                                                         object_type_id => MinorImpact::Object::typeID('note'), 
                                                         search => "tag:$tag",
                                                         user_id => $user->id(),
-                                                    });
+                                                    } });
     if (scalar(@notes) != $note_count) {
         #print "note count mismatch: '$note_count' != '" . scalar(@notes) . "'\n";
     }

@@ -6,7 +6,7 @@ use MinorImpact::Util;
 use note;
 
 my $MI = new MinorImpact({ https => 1, config_file => "../conf/minorimpact.conf" });
-$MI->cgi({ actions => { archive => \&archive, edit => \&edit, index => \&index, note => \&note }, tag=>'new' });
+$MI->cgi({ actions => { archive => \&archive, edit => \&edit, index => \&index } });
 
 sub archive {
     my $MINORIMPACT = shift || return;
@@ -60,65 +60,20 @@ sub index {
     my $TT = MinorImpact::getTT();
     my $user = MinorImpact::getUser({ force => 1 });
 
-    my $collection_id = $CGI->param('cid');
-    my $limit = $CGI->param('limit') || 30;
-    my $page = $CGI->param('page') || 1;
     my $search = $CGI->param('search');
-    my $sort = $CGI->param('sort') || -1;
+    my $collection_id = $CGI->param('cid');
     my $type_id = MinorImpact::Object::typeID('note');
 
-
-    my @collections = $user->getCollections();
-    my $collection = new MinorImpact::Object($collection_id) if ($collection_id);
-    if ($collection) {
-        $search = $collection->searchText();
+    my $local_params = cloneHash($params);
+    $local_params->{query} = { 
+                                %{$local_params->{query}},
+                                debug => "note::index.cgi::index();", 
+                                object_type_id=>$type_id, 
+                                user_id => $user->id(),
+                            };
+    unless ($collection_id || $search) {
+        $local_params->{query}{tag} = "new";
     }
-   
-    my $local_params = {object_type_id=>$type_id, sort=>1, debug=> "note::index.cgi::index();" };
-    $local_params->{limit} = $limit + 1;
-    $local_params->{page} = $page;
-    $local_params->{sort} = $sort;
-    $local_params->{user_id} = $user->id();
-    if ($search) {
-        $local_params->{search} = $search;
-    } else {
-        $local_params->{tag} = "new";
-    }
-
-    my @objects = MinorImpact::Object::Search::search($local_params);
-
-    my $url_last = $page>1?"$script_name?cid=$collection_id&search=$serach&page=" . ($page - 1):'';
-    my $url_next = (scalar(@objects)>$limit)?"$script_name?cid=$collection_id&search=$search&page=" . ($page + 1):'';
-    pop(@objects) if ($url_next);
-    #MinorImpact::CGI::index($MINORIMPACT);
-    $TT->process('index', {
-                            collections => [ @collections ],
-                            objects     => [ @objects ],
-                            search      => $search,
-                            sort        => $sort,
-                            type_id     => $type_id,
-                            type_name   => 'note',
-                            url_last    => $url_last,
-                            url_next    => $url_next,
-                        }) || die $TT->error();
+    return MinorImpact::CGI::index($MINORIMPACT, $local_params);
 }
 
-sub note {
-    my $MINORIMPACT = shift || return;
-    my $params = shift ||{};
-
-    my $CGI = MinorImpact::getCGI();
-    my $TT = MinorImpact::getTT();
-    my $user = MinorImpact::getUser({ force => 1 });
-
-    my $object_id = $CGI->param('id') || $MINORIMPACT->redirect();
-    my $object = new MinorImpact::Object($object_id) || $MINORIMPACT->redirect();
-
-    my @collections = $user->getCollections();
-
-    $TT->process('index', {
-                            collections => [ @collections ],
-                            object      => $object,
-                            type_name   => 'note',
-                        }) || die $TT->error();
-}

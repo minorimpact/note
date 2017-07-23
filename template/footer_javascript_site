@@ -1,5 +1,7 @@
 \$(function() {
-   document.getElementById("detail").focus();
+   if (document.getElementById("detail")) {
+        document.getElementById("detail").focus();
+    }
    var return_count = 0;
     \$("#detail").keypress(function (e) {
         if(e.which == 13) {
