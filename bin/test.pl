@@ -11,7 +11,7 @@ use MinorImpact::Util;
 use lib "../lib";
 use note;
 
-my $test_count = 10;
+my $test_count = 0;
 my $MAX_CHILD_COUNT = 3;
 my $verbose = 0;
 my $start_time = [gettimeofday];
