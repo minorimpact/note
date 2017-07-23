@@ -1,0 +1,23 @@
+<div class="w3-container">
+</div>
+<div class="w3-container w3-row w3-panel w3-card">
+    <div class="w3-bar">
+        <a href='[% object.back() %]' class='w3-bar-item'><i class="fa fa-arrow-left fa-2x"></i></a>
+        <a href='[% INCLUDE url_index action='edit' %]' class='w3-bar-item'><i class='fa fa-edit fa-2x'></i></a>
+        <a href='[% INCLUDE url_index action='archive' %]' class='w3-bar-item'><i class='fa fa-archive fa-2x'></i></a>
+        <a href='[% INCLUDE url_index action='delete' %]' class='w3-bar-item'><i class='fa fa-trash fa-2x'></i></a>
+    </div>
+    <div class="w3-col s10 m11 w3-panel" onclick="document.location='[% INCLUDE url_index action='note' %]';">
+        <div class="w3-margin-bottom">
+            <div class="w3-margin-left">
+                [% object.get('detail', { markdown => 1 }) %]<br />
+                [% INCLUDE mod_date %]
+            </div>
+        </div>
+        <div class="">
+            [% FOREACH tag IN object.tags() %]
+                [% INCLUDE tag %]
+            [% END %]
+        </div>
+    </div>
+</div>

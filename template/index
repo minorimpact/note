@@ -1,0 +1,10 @@
+[% INCLUDE header %]
+
+<!-- TEMPLATE:default.index -->
+[% IF object %]
+    [% INCLUDE object_detail %]
+[% ELSE %]
+    [% INCLUDE list_object %]
+[% END %]
+
+[% INCLUDE footer %]
