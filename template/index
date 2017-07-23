@@ -2,7 +2,7 @@
 
 <!-- TEMPLATE:default.index -->
 [% IF object %]
-    [% INCLUDE object_detail %]
+    [% INCLUDE object_column %]
 [% ELSE %]
     [% INCLUDE list_object %]
 [% END %]

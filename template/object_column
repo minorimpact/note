@@ -1,5 +1,3 @@
-<div class="w3-container">
-</div>
 <div class="w3-container w3-row w3-panel w3-card">
     <div class="w3-bar">
         <a href='[% object.back() %]' class='w3-bar-item'><i class="fa fa-arrow-left fa-2x"></i></a>
