@@ -61,6 +61,7 @@ sub index {
     my $user = MinorImpact::getUser({ force => 1 });
 
     my $search = $CGI->param('search');
+    my $sort = $CGI->param('sort') || -1;
     my $collection_id = $CGI->param('cid');
     my $type_id = MinorImpact::Object::typeID('note');
 
@@ -69,6 +70,7 @@ sub index {
                                 %{$local_params->{query}},
                                 debug => "note::index.cgi::index();", 
                                 object_type_id=>$type_id, 
+                                sort => $sort,
                                 user_id => $user->id(),
                             };
     unless ($collection_id || $search) {
