@@ -2,7 +2,8 @@
     <div class="w3-bar">
         <a href='[% object.back() %]' class='w3-bar-item'><i class="fa fa-arrow-left fa-2x"></i></a>
         <a href='[% INCLUDE url_index action='edit' %]' class='w3-bar-item'><i class='fa fa-edit fa-2x'></i></a>
-        <a href='[% INCLUDE url_index action='archive' %]' class='w3-bar-item'><i class='fa fa-archive fa-2x'></i></a>
+        [% IF object.hasTag("new") %]<a href='[% INCLUDE url_index action='archive' %]' class='w3-bar-item'><i class='fa fa-folder fa-2x'></i></a>
+        [% ELSE %]<a href='[% INCLUDE url_index action='archive' %]' class='w3-bar-item'><i class='fa fa-folder-open fa-2x'></i></a>[% END -%]
         <a href='[% INCLUDE url_index action='delete' %]' class='w3-bar-item'><i class='fa fa-trash fa-2x'></i></a>
     </div>
     <div class="w3-col s10 m11 w3-panel">

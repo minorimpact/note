@@ -1,7 +1,8 @@
 <div class="w3-container w3-row w3-panel w3-card">
     <div class="w3-col s2 m1 w3-center w3-margin-top">
         <a href='[% INCLUDE url_index action='edit' %]'><i class="fa fa-edit fa-2x"></i></a><br />
-        <a href='[% INCLUDE url_index action='archive' %]'><i class="fa fa-archive fa-2x"></i></a><br />
+        [% IF object.hasTag("new") %]<a href='[% INCLUDE url_index action='archive' %]'><i class="fa fa-folder fa-2x"></i></a>
+        [% ELSE %]<a href='[% INCLUDE url_index action='archive' %]'><i class="fa fa-folder-open fa-2x"></i></a>[% END -%]<br />
         <a href='[% INCLUDE url_index action='delete' %]'><i class="fa fa-trash fa-2x"></i></a>
     </div>
     <div class="w3-col s10 m11 w3-panel">
