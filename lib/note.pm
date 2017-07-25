@@ -23,14 +23,22 @@ sub new {
         my @tags;
         if ($params->{detail}) {
             my $detail = $params->{detail};
+
+            # Pullinline tags and convert them to object tags.
             $detail =~s/\r\n/\n/g;
             @tags = extractTags(\$detail);
             $detail = trim($detail);
+
+            # Change links to markdown formatted links.
+            foreach my $url ($detail =~/(?<![\[\(])(https?:\/\/[^\s]+)/) {
+                my $md_url = "[$url]($url)";
+                $detail =~s/(?<![\[\(])$url/$md_url/;
+            }
             $params->{detail} = $detail;
         }
 
         $params->{tags} .= " " . join(" ", @tags) . " new";
-       #MinorImpact::log(8, "\$params->{tags}='" . $params->{tags} . "'");
+        #MinorImpact::log(8, "\$params->{tags}='" . $params->{tags} . "'");
     }
     my $self = $package->SUPER::_new($params);
     bless($self, $package);
@@ -70,20 +78,6 @@ sub name {
     $local_params->{one_line} = 1;
     $local_params->{truncate} = 120;
     return $self->get('detail', $local_params);
-}
-
-sub toString {
-    my $self = shift || return;
-    my $params = shift || {};
-
-    #if ($params->{format} eq 'list') {
-    #    my $row;
-    #    my $TT = MinorImpact::getTT();
-    #    $TT->process('object_list', {object=>$self}, \$row) || die $TT->error();
-    #    return $row;
-    #} else {
-        return $self->SUPER::toString($params);
-    #}
 }
 
 sub cmp {
