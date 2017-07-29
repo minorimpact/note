@@ -11,7 +11,7 @@ use MinorImpact::Util;
 use lib "../lib";
 use note;
 
-my $test_count = 0;
+my $test_count = 5;
 my $MAX_CHILD_COUNT = 3;
 my $verbose = 0;
 my $start_time = [gettimeofday];
@@ -56,7 +56,7 @@ sub test {
     my $MINORIMPACT = new MinorImpact({ config_file => "/usr/local/www/note.minorimpact.com/conf/minorimpact.conf", no_log => 1 });
     my $password = time() . $$ . int(rand(100)) ;
     my $username = "test_user_note_$password";
-    #print "adding test_user $username\n";
+    print "adding test_user $username\n" if ($verbose);
     MinorImpact::User::addUser({ username => $username, password => $password });
     my $user = MinorImpact::getUser({ username => $username, password => $password }) || die "Can't retrieve user $username\n";;
 
