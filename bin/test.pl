@@ -53,7 +53,7 @@ MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "note_count", va
 
 sub test {
     my $test_start_time = [gettimeofday];
-    my $MINORIMPACT = new MinorImpact({ config_file => "/usr/local/www/note.minorimpact.com/conf/minorimpact.conf", no_log => 1 });
+    my $MINORIMPACT = new MinorImpact({ no_log => 1 });
     my $password = time() . $$ . int(rand(100)) ;
     my $username = "test_user_note_$password";
     print "adding test_user $username\n" if ($verbose);
