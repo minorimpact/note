@@ -9,7 +9,7 @@ use MinorImpact::Util;
 use lib "../lib";
 use note;
 
-my $MINORIMPACT = new MinorImpact({ config_file => "../conf/minorimpact.conf" });
+my $MINORIMPACT = new MinorImpact();
 
 my $DB = $MinorImpact::SELF->{DB};
 my $USERDB = $MinorImpact::SELF->{USERDB};
