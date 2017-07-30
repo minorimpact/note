@@ -5,7 +5,7 @@ use MinorImpact::Util;
 
 use note;
 
-my $MI = new MinorImpact({ https => 1, config_file => "../conf/minorimpact.conf" });
+my $MI = new MinorImpact({ https => 1 });
 $MI->cgi({ actions => { archive => \&archive, edit => \&edit, home => \&home } });
 
 sub archive {
