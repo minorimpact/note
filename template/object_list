@@ -9,7 +9,7 @@
         <div class="w3-leftbar w3-margin-bottom" onclick="document.location='[% INCLUDE url_index action='home' id=object.id() %]';" style="cursor:pointer;">
             <div class="w3-margin-left">
                 [% object.name({ markdown => 1 }) %]<br />
-                modification date: [% INCLUDE mod_date %]
+                [% INCLUDE mod_date %]
             </div>
         </div>
         <div class="">
