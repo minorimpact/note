@@ -31,7 +31,7 @@ use lib "../lib";
 use note;
 
 die "config file $options->{config} does not exist" unless (-f $options->{config});
-my $test_count = $options->{test_count} || int(rand(10));
+my $test_count = $options->{test_count} || int(rand(10)) + 1;
 my $MAX_CHILD_COUNT = 3;
 my $verbose = $options->{verbose};
 my $start_time = [gettimeofday];
@@ -67,6 +67,7 @@ my $USERDB = $MinorImpact::SELF->{USERDB};
 my $user_count = $USERDB->selectrow_array("SELECT count(*) FROM user");
 my $note_count = $DB->selectrow_array("SELECT count(*) FROM object WHERE object_type_id=?", undef, (MinorImpact::Object::typeID('note')));
 my $tag_count = $DB->selectrow_array("SELECT count(distinct(name)) FROM object_tag");
+
 print "user_count=$user_count\n" if ($options->{verbose});
 MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "user_count", value => $user_count });
 print "note_count=$note_count\n" if ($options->{verbose});
@@ -94,25 +95,38 @@ sub test {
         print "$$ logging in as " . $user->name() . "(" . $user->id() . ")\n" if ($options->{verbose});
     }
 
+    my $DB = $MINORIMPACT->{DB};
+    my @all_tags;
+    my $all_tags = $DB->selectall_arrayref("SELECT distinct(name) FROM object_tag", {Slice=>{}});
+    foreach my $tag (@$all_tags) {
+        push(@all_tags, $tag->{name});
+    }
+
     while (my $action_type = int(rand(5))) {
         my @notes = MinorImpact::Object::Search::search({ query => { 
                                                             object_type_id => MinorImpact::Object::typeID('note'), 
                                                             user_id => $user->id(),
                                                         } });
-        my @tags;
         my $note_count = scalar(@notes);
-        my $tag_count = scalar(@tags);
+        my @user_tags;
         foreach my $note (@notes) {
-            push(@tags, $note->tags());
+            push(@user_tags, $note->tags());
         }
         if ($action_type == 1 || $note_count == 0) { # add note
             my $tag;
-            if (int(rand(3)) == 1 || $tag_count == 0) {
+            my $tag_type = int(rand(100));
+            if ($tag_type < 5 || scalar(@all_tags) == 0 ) {
                 $tag = randomText(1);
+                print "$$ creating a whole new tag: $tag\n" if ($options->{verbose});
+            } elsif ($tag_type < 75 || scalar(@user_tags) == 0 ) {
+                $tag = $all_tags[int(rand(scalar(@all_tags)))];
+                print "$$ using an existing tag: $tag\n" if ($options->{verbose});
             } else {
-                $tag = $tags[int(rand($tag_count))];
+                $tag = $tags[int(rand(scalar(@user_tags)))];
+                print "$$ reusing one of their own tags: $tag\n" if ($options->{verbose});
             }
-            my $text = randomText() . '.';
+
+            my $text = ucfirst(randomText()) . '.';
             print "$$ adding note: $text tag: $tag\n" if ($options->{verbose});
             my $note = new note({ detail => $text, user_id => $user->id(), tags=>$tag });
             if ($text ne $note->get('detail')) {
@@ -122,7 +136,7 @@ sub test {
             my $note = $notes[int(rand($note_count))];
             $note->delete();
         } else { # search by tag and edit
-            my $tag = $tags[int(rand($tag_count))];
+            my $tag = $user_tags[int(rand(scalar(@user_tags)))];
             print "$$ searching for tag:$tag\n" if ($options->{verbose});
             @notes = MinorImpact::Object::Search::search({ 
                 query => { 
