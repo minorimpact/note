@@ -55,7 +55,7 @@ sub test {
     my $test_start_time = [gettimeofday];
     my $MINORIMPACT = new MinorImpact({ no_log => 1 });
     my $password = time() . $$ . int(rand(100)) ;
-    my $username = "test_user_note_$password";
+    my $username = "test_user_$password";
     print "adding test_user $username\n" if ($verbose);
     MinorImpact::User::addUser({ username => $username, password => $password });
     my $user = MinorImpact::getUser({ username => $username, password => $password }) || die "Can't retrieve user $username\n";;
