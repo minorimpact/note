@@ -66,10 +66,13 @@ my $DB = $MinorImpact::SELF->{DB};
 my $USERDB = $MinorImpact::SELF->{USERDB};
 my $user_count = $USERDB->selectrow_array("SELECT count(*) FROM user");
 my $note_count = $DB->selectrow_array("SELECT count(*) FROM object WHERE object_type_id=?", undef, (MinorImpact::Object::typeID('note')));
+my $tag_count = $DB->selectrow_array("SELECT count(distinct(name)) FROM object_tag");
 print "user_count=$user_count\n" if ($options->{verbose});
 MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "user_count", value => $user_count });
 print "note_count=$note_count\n" if ($options->{verbose});
 MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "note_count", value => $note_count });
+print "tag_count=$tag_count\n" if ($options->{verbose});
+MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "tag_count", value => $tag_count });
 
 sub test {
     my $test_start_time = [gettimeofday];
