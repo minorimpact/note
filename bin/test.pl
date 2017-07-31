@@ -122,7 +122,7 @@ sub test {
                 $tag = $all_tags[int(rand(scalar(@all_tags)))];
                 print "$$ using an existing tag: $tag\n" if ($options->{verbose});
             } else {
-                $tag = $tags[int(rand(scalar(@user_tags)))];
+                $tag = $user_tags[int(rand(scalar(@user_tags)))];
                 print "$$ reusing one of their own tags: $tag\n" if ($options->{verbose});
             }
 
@@ -148,7 +148,7 @@ sub test {
                 print "$$ ERROR: no notes returned for tag:$tag\n" if ($options->{verbose});
             } else {
                 my $note = $notes[int(rand(scalar(@notes)))];
-                my $text = randomText() . '.';
+                my $text = ucfirst(randomText()) . '.';
                 print "$$ updating note: $text\n" if ($options->{verbose});
                 $note->update({detail => $text});
                 if ($text ne $note->get('detail')) {
