@@ -15,7 +15,7 @@ GetOptions( $options,
             "force|f",
             "help|?|h",
             "id|i=i",
-            "test_count",
+            "test_count|t=i",
             "verbose",
         ) || HelpMessage();
 
@@ -116,7 +116,7 @@ sub test {
         push(@all_tags, $tag->{name});
     }
 
-    while (my $action_type = int(rand(7))) {
+    while (my $action_type = int(rand(6))) {
         my @notes = MinorImpact::Object::Search::search({ query => { 
                                                             object_type_id => MinorImpact::Object::typeID('note'), 
                                                             user_id => $user->id(),
@@ -169,7 +169,7 @@ sub test {
                 print "$$ updating note: $text tag:$tag\n" if ($options->{verbose});
                 $note->update({detail => $text, tags=>$tag});
                 if ($text ne $note->get('detail')) {
-                    print "$$ ERROR: text mismatch\n" if ($options->{verbse});
+                    print "$$ ERROR: text mismatch\n" if ($options->{verbose});
                 }
             }
         }
