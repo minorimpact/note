@@ -6,14 +6,14 @@ use MinorImpact::Util;
 use note;
 
 my $MI = new MinorImpact({ https => 1 });
-$MI->cgi({ actions => { archive => \&archive, edit => \&edit, home => \&home } });
+$MI->www({ actions => { archive => \&archive, edit => \&edit, home => \&home } });
 
 sub archive {
     my $MINORIMPACT = shift || return;
     my $params = shift || {};
 
     #MinorImpact::log(7, "starting");
-    my $CGI = $MINORIMPACT->getCGI();
+    my $CGI = $MINORIMPACT->cgi();
 
     my $collection_id = $CGI->param('collection_id') || $CGI->param('cid');
     my $object_id = $CGI->param('object_id') || $CGI->param('id') || $MINORIMPACT->redirect();
@@ -46,7 +46,7 @@ sub home {
     my $MINORIMPACT = shift || return;
     my $params = shift ||{};
 
-    my $CGI = MinorImpact::getCGI();
+    my $CGI = MinorImpact::cgi();
     my $user = MinorImpact::getUser({ force => 1 });
 
     my $search = $CGI->param('search');
