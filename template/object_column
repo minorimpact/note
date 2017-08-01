@@ -13,7 +13,7 @@
                 [% INCLUDE mod_date %]
             </div>
         </div>
-        <div class="">
+        <div>
             [% FOREACH tag IN object.tags() %]
                 [% INCLUDE tag %]
             [% END %]

@@ -116,7 +116,7 @@ sub test {
         push(@all_tags, $tag->{name});
     }
 
-    while (my $action_type = int(rand(5))) {
+    while (my $action_type = int(rand(7))) {
         my @notes = MinorImpact::Object::Search::search({ query => { 
                                                             object_type_id => MinorImpact::Object::typeID('note'), 
                                                             user_id => $user->id(),
@@ -127,18 +127,7 @@ sub test {
             push(@user_tags, $note->tags());
         }
         if ($action_type == 1 || $note_count == 0) { # add note
-            my $tag;
-            my $tag_type = int(rand(100));
-            if ($tag_type < 5 || scalar(@all_tags) == 0 ) {
-                $tag = randomText(1);
-                print "$$ creating a whole new tag: $tag\n" if ($options->{verbose});
-            } elsif ($tag_type < 75 || scalar(@user_tags) == 0 ) {
-                $tag = $all_tags[int(rand(scalar(@all_tags)))];
-                print "$$ using an existing tag: $tag\n" if ($options->{verbose});
-            } else {
-                $tag = $user_tags[int(rand(scalar(@user_tags)))];
-                print "$$ reusing one of their own tags: $tag\n" if ($options->{verbose});
-            }
+            my $tag = tag(\@all_tags, \@user_tags);;
 
             my $text = ucfirst(randomText()) . '.';
             print "$$ adding note: $text tag: $tag\n" if ($options->{verbose});
@@ -149,6 +138,19 @@ sub test {
         } elsif ($action_type == 2) { # delete note
             my $note = $notes[int(rand($note_count))];
             $note->delete();
+        } elsif ($action_type == 3) { # remove 'new' tag.
+            my $note = $notes[int(rand($note_count))];
+
+            if ($note->hasTag('new')) {
+                print "$$ Removing 'new' tag from note\n" if ($options->{verbose});
+                if (grep { /^new$/ } @tags) {
+                    @tags = grep { !/^new$/; } $note->getTags();
+                }
+                $note->update({ tags => join(",", @tags) });
+                if ($note->hasTag('new')) {
+                    print "$$ ERROR: Note still has 'new' tag\n" if ($options->{verbose});
+                }
+            }
         } else { # search by tag and edit
             my $tag = $user_tags[int(rand(scalar(@user_tags)))];
             print "$$ searching for tag:$tag\n" if ($options->{verbose});
@@ -163,8 +165,9 @@ sub test {
             } else {
                 my $note = $notes[int(rand(scalar(@notes)))];
                 my $text = ucfirst(randomText()) . '.';
-                print "$$ updating note: $text\n" if ($options->{verbose});
-                $note->update({detail => $text});
+                my $tag = tag(\@all_tags, \@user_tags);
+                print "$$ updating note: $text tag:$tag\n" if ($options->{verbose});
+                $note->update({detail => $text, tags=>$tag});
                 if ($text ne $note->get('detail')) {
                     print "$$ ERROR: text mismatch\n" if ($options->{verbse});
                 }
@@ -177,5 +180,26 @@ sub test {
     #$user->delete();
 }
 
-sub randomUser {
+sub tag {
+    my $all_tags = shift || return;
+    my $user_tags = shift || return;
+    my $tag_count = shift || int(rand(3)) + 1;
+
+    my $tags;
+    for (my $i = 0; $i<$tag_count; $i++) {
+        my $tag_type = int(rand(100));
+        if ($tag_type < 5 || scalar(@{$all_tags}) == 0 ) {
+            $tag = randomText(1);
+            print "$$ creating a whole new tag: $tag\n" if ($options->{verbose});
+        } elsif ($tag_type < 75 || scalar(@{$user_tags}) == 0 ) {
+            $tag = $all_tags->[int(rand(scalar(@{$all_tags})))];
+            print "$$ using an existing tag: $tag\n" if ($options->{verbose});
+        } else {
+            $tag = $user_tags->[int(rand(scalar(@{$user_tags})))];
+            print "$$ reusing one of their own tags: $tag\n" if ($options->{verbose});
+        }
+        $tags .= "$tag,";
+    }
+    $tags =~s/,$//;
+    return $tags;
 }
