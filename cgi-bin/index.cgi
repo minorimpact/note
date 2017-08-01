@@ -47,7 +47,6 @@ sub home {
     my $params = shift ||{};
 
     my $CGI = MinorImpact::getCGI();
-    my $TT = MinorImpact::getTT();
     my $user = MinorImpact::getUser({ force => 1 });
 
     my $search = $CGI->param('search');
