@@ -101,7 +101,7 @@ sub test {
         my $username = "test_user_note_$password";
         print "$$ adding user $username\n" if ($options->{verbose});
         MinorImpact::User::addUser({ username => $username, password => $password });
-        $user = MinorImpact::getUser({ username => $username, password => $password }) || die "Can't retrieve user $username\n";;
+        $user = MinorImpact::user({ username => $username, password => $password }) || die "Can't retrieve user $username\n";;
     } elsif ($user_type == 1) { # angry user
         print "$$ deleting user " . $user->name() . "(" . $user->id() . ")\n" if ($options->{verbose});
         return $user->delete();

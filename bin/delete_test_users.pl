@@ -21,7 +21,7 @@ foreach my $row (@$users) {
     print $row->{id} . ": " . $row->{name} . "\n";
     my $username = $row->{name};
     my ($password) = $username =~/_([0-9]+)$/;
-    my $user = MinorImpact::getUser({ username => $username, password => $password });
+    my $user = MinorImpact::user({ username => $username, password => $password });
     $user->delete({ username => $username, password => $password }) if ($user);
 }
 

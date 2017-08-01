@@ -39,7 +39,7 @@ sub edit {
     my $params = shift || {};
 
     $params->{no_name} = 1;
-    MinorImpact::CGI::edit($MINORIMPACT, $params);
+    MinorImpact::WWW::edit($MINORIMPACT, $params);
 }
 
 sub home {
@@ -47,7 +47,7 @@ sub home {
     my $params = shift ||{};
 
     my $CGI = MinorImpact::cgi();
-    my $user = MinorImpact::getUser({ force => 1 });
+    my $user = MinorImpact::user({ force => 1 });
 
     my $search = $CGI->param('search');
     my $collection_id = $CGI->param('cid');
@@ -63,6 +63,6 @@ sub home {
     unless ($collection_id || $search) {
         $local_params->{query}{tag} = "new";
     }
-    return MinorImpact::CGI::home($MINORIMPACT, $local_params);
+    return MinorImpact::WWW::home($MINORIMPACT, $local_params);
 }
 
