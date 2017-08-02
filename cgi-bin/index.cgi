@@ -21,9 +21,9 @@ sub archive {
 
     my $object = new MinorImpact::Object($object_id) || $MINORIMPACT->redirect();
 
-    my @tags = $object->getTags();
+    my @tags = $object->tags();
     if (grep { /^new$/ } @tags) {
-        @tags = grep { !/^new$/; } $object->getTags();
+        @tags = grep { !/^new$/; } $object->tags();
     } else {
         push(@tags, "new");
     }

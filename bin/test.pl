@@ -144,7 +144,7 @@ sub test {
             if ($note->hasTag('new')) {
                 print "$$ Removing 'new' tag from note\n" if ($options->{verbose});
                 if (grep { /^new$/ } @tags) {
-                    @tags = grep { !/^new$/; } $note->getTags();
+                    @tags = grep { !/^new$/; } $note->tags();
                 }
                 $note->update({ tags => join(",", @tags) });
                 if ($note->hasTag('new')) {
