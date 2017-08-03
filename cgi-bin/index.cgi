@@ -51,13 +51,13 @@ sub home {
 
     my $search = $CGI->param('search');
     my $collection_id = $CGI->param('cid');
-    my $type_id = MinorImpact::Object::typeID('note');
+    my $object_type_id = MinorImpact::Object::typeID('note');
 
     my $local_params = cloneHash($params);
     $local_params->{query} = { 
                                 %{$local_params->{query}},
                                 debug => "note::index.cgi::index();", 
-                                object_type_id=>$type_id, 
+                                object_type_id => $object_type_id, 
                                 user_id => $user->id(),
                             };
     unless ($collection_id || $search) {
