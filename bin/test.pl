@@ -11,7 +11,7 @@ my $options = {
 Getopt::Long::Configure("bundling");
 GetOptions( $options,
             "config|c=s",
-            "count",
+            "count|c=i",
             "force|f",
             "help|?|h",
             "id|i=i",
@@ -31,7 +31,7 @@ use lib "../lib";
 use note;
 
 die "config file $options->{config} does not exist" unless (-f $options->{config});
-my $test_count = $options->{test_count} || int(rand(10)) + 1;
+my $test_count = $options->{test_count} || $options->{count} || int(rand(10)) + 1;
 my $MAX_CHILD_COUNT = 3;
 my $verbose = $options->{verbose};
 my $start_time = [gettimeofday];
