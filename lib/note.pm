@@ -1,5 +1,7 @@
 package note;
 
+use strict;
+
 use Data::Dumper;
 use Time::Local;
 
@@ -9,8 +11,6 @@ use MinorImpact::User;
 use MinorImpact::Util;
 
 our @ISA = qw(MinorImpact::Object);
-
-our $VERSION = 1;
 
 sub new {
     my $package = shift;
@@ -93,28 +93,19 @@ sub cmp {
     return $self->get('mod_date');
 }
 
+our $VERSION = 5;
 sub dbConfig {
     #MinorImpact::log(7, "starting");
 
     # Verify type exists.
     my $name = __PACKAGE__;
-    my $object_type_id = MinorImpact::Object::Type::add({
-        name => $name,
-        system => 0,
-    });
+    my $object_type_id = MinorImpact::Object::Type::add({ name => $name, system => 0, });
     die "Could not add object_type record\n" unless ($object_type_id);
 
-    MinorImpact::Object::Type::addField({
-        object_type_id => $object_type_id,
-        name => 'detail',
-        required => 1,
-        type => 'text',
-    });
-    MinorImpact::Object::Type::addField({
-        object_type_id => $object_type_id,
-        name => 'public',
-        type => 'boolean',
-    });
+    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'detail', required => 1, type => 'text', });
+    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'public', type => 'boolean', });
+
+    MinorImpact::Object::Type::addField({ object_type_id => 'MinorImpact::settings', name => 'default_tag', type => 'string', default_value => 'new'});
 
     MinorImpact::Object::Type::setVersion($object_type_id, $VERSION);
 

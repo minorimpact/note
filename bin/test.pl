@@ -21,11 +21,13 @@ GetOptions( $options,
 
 
 use MinorImpact;
-use MinorImpact::InfluxDB;
 use MinorImpact::Object;
 use MinorImpact::Object::Search;
 use MinorImpact::Test;
 use MinorImpact::Util;
+
+
+use Uravo::InfluxDB;
 
 use lib "../lib";
 use note;
@@ -59,7 +61,7 @@ my $total_time = tv_interval($start_time, $end_time);
 if ($test_count) {
     my $avg_time = $total_time/$test_count;
     print "average test time = $avg_time\n" if ($options->{verbose});
-    MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "test_avg", value => $avg_time });
+    Uravo::InfluxDB::influxdb({ db => "note_stats", metric => "test_avg", value => $avg_time });
 }
 
 my $MINORIMPACT = new MinorImpact({ no_log => 1 });
@@ -71,22 +73,22 @@ my $tag_count = $DB->selectrow_array("SELECT count(*) FROM object_tag");
 my $unique_tag_count = $DB->selectrow_array("SELECT count(distinct(name)) FROM object_tag");
 
 print "user_count = $user_count\n" if ($options->{verbose});
-MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "user_count", value => $user_count });
+Uravo::InfluxDB::influxdb({ db => "note_stats", metric => "user_count", value => $user_count });
 print "note_count = $note_count\n" if ($options->{verbose});
-MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "note_count", value => $note_count });
+Uravo::InfluxDB::influxdb({ db => "note_stats", metric => "note_count", value => $note_count });
 print "tag_count = $tag_count\n" if ($options->{verbose});
-MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "tag_count", value => $tag_count });
+Uravo::InfluxDB::influxdb({ db => "note_stats", metric => "tag_count", value => $tag_count });
 print "unique_tag_count = $unique_tag_count\n" if ($options->{verbose});
-MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "unique_tag_count", value => $unique_tag_count });
+Uravo::InfluxDB::influxdb({ db => "note_stats", metric => "unique_tag_count", value => $unique_tag_count });
 if ($user_count) {
     print "notes/user = " . ($note_count/$user_count) . "\n"  if ($options->{verbose});
-    MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "notes_per_user", value => ($note_count/$user_count) });
+    Uravo::InfluxDB::influxdb({ db => "note_stats", metric => "notes_per_user", value => ($note_count/$user_count) });
     print "tags/user = " . ($tag_count/$user_count) . "\n"  if ($options->{verbose});
-    MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "tags_per_user", value => ($tag_count/$user_count) });
+    Uravo::InfluxDB::influxdb({ db => "note_stats", metric => "tags_per_user", value => ($tag_count/$user_count) });
 }
 if ($note_count) {
     print "tags/note = " . ($tag_count/$note_count) . "\n"  if ($options->{verbose});
-    MinorImpact::InfluxDB::influxdb({ db => "note_stats", metric => "tags_per_note", value => ($tag_count/$note_count) });
+    Uravo::InfluxDB::influxdb({ db => "note_stats", metric => "tags_per_note", value => ($tag_count/$note_count) });
 }
 
 sub test {
