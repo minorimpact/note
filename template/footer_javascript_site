@@ -1,3 +1,4 @@
+<script>
 \$(function() {
    if (document.getElementById("detail")) {
         document.getElementById("detail").focus();
@@ -21,3 +22,4 @@
         }
     });
 });
+</script>

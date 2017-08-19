@@ -18,6 +18,8 @@ sub archive {
     my $collection_id = $CGI->param('collection_id') || $CGI->param('cid');
     my $object_id = $CGI->param('object_id') || $CGI->param('id') || $MINORIMPACT->redirect();
     my $search = $CGI->param('search');
+    my $user = $MINORIMPACT->user({ force => 1 });
+    my $settings = $user->settings();
 
     my $object = new MinorImpact::Object($object_id) || $MINORIMPACT->redirect();
 
@@ -25,7 +27,7 @@ sub archive {
     if (grep { /^new$/ } @tags) {
         @tags = grep { !/^new$/; } $object->tags();
     } else {
-        push(@tags, "new");
+        push(@tags, $settings->get('default_tag'));
     }
 
     #MinorImpact::log(8, "\@tags='" . join(",", @tags) . "'");
@@ -52,6 +54,7 @@ sub home {
     my $search = $CGI->param('search');
     my $collection_id = $CGI->param('cid');
     my $object_type_id = MinorImpact::Object::typeID('note');
+    my $settings = $user->settings();
 
     my $local_params = cloneHash($params);
     $local_params->{query} = { 
@@ -61,7 +64,7 @@ sub home {
                                 user_id => $user->id(),
                             };
     unless ($collection_id || $search) {
-        $local_params->{query}{tag} = "new";
+        $local_params->{query}{tag} = $settings->get('default_tag');
     }
     return MinorImpact::WWW::home($MINORIMPACT, $local_params);
 }
