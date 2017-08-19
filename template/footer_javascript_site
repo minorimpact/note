@@ -1,3 +1,4 @@
+<!-- TEMPLATE:note.footer_javascript_site -->
 <script>
 \$(function() {
    if (document.getElementById("detail")) {
