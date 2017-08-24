@@ -33,7 +33,7 @@ sub archive {
     #MinorImpact::log(8, "\@tags='" . join(",", @tags) . "'");
     $object->update({ tags => join(",", @tags) });
 
-    $MINORIMPACT->redirect("?a=home&cid=$collection_id&search=$search");
+    $MINORIMPACT->redirect({ action => 'home', collection_id => $collection_id, search => $search });
 }
 
 sub edit {
