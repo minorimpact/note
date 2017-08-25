@@ -48,24 +48,26 @@ sub home {
     my $MINORIMPACT = shift || return;
     my $params = shift ||{};
 
+
     my $CGI = MinorImpact::cgi();
     my $user = MinorImpact::user({ force => 1 });
-
-    my $search = $CGI->param('search');
-    my $collection_id = $CGI->param('cid');
     my $object_type_id = MinorImpact::Object::typeID('note');
-    my $settings = $user->settings();
 
     my $local_params = cloneHash($params);
-    $local_params->{query} = { 
-                                %{$local_params->{query}},
-                                debug => "note::index.cgi::index();", 
-                                object_type_id => $object_type_id, 
-                                user_id => $user->id(),
-                            };
-    unless ($collection_id || $search) {
-        $local_params->{query}{tag} = $settings->get('default_tag');
+    my $settings = $user->settings();
+    if ($settings && $settings->get('default_tag')) {
+        $default_search = 'tag:' . $settings->get('default_tag');
+        $local_params->{search_placeholder} = $default_search;
     }
+
+    my $search = MinorImpact::session('search');
+    my $collection_id = MinorImpact::session('collection_id');
+
+    if (!$search && !$collection_id) {
+        $search = $default_search;
+    }
+    MinorImpact::session('search', $search);
+
     return MinorImpact::WWW::home($MINORIMPACT, $local_params);
 }
 

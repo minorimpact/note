@@ -1,12 +1,12 @@
 <div class="w3-container w3-row w3-panel w3-card">
     <div class="w3-col s2 m1 w3-center w3-margin-top">
-        <a href='[% INCLUDE url_index action='edit' %]' title='Edit note'><i class="fa fa-edit fa-2x"></i></a><br />
-        [% IF object.hasTag("new") %]<a href='[% INCLUDE url_index action='archive' %]' title='Archive note'><i class="fa fa-folder fa-2x"></i></a>
-        [% ELSE %]<a href='[% INCLUDE url_index action='archive' %]' title='Unarchive note'><i class="fa fa-folder-open fa-2x"></i></a>[% END -%]<br />
-        <a href='[% INCLUDE url_index action='delete' %]' title='Delete note'><i class="fa fa-trash fa-2x"></i></a>
+        <a href='[% url({ action='edit', object_id=>object.id() }) %]' title='Edit note'><i class="fa fa-edit fa-2x"></i></a><br />
+        [% IF object.hasTag("new") %]<a href='[% url({ action='archive', object_id=>object.id() }) %]' title='Archive note'><i class="fa fa-folder fa-2x"></i></a>
+        [% ELSE %]<a href='[% url({ action='archive', object_id=>object.id() }) %]' title='Unarchive note'><i class="fa fa-folder-open fa-2x"></i></a>[% END -%]<br />
+        <a href='[% url({ action='delete', object_id=>object.id() }) %]' title='Delete note'><i class="fa fa-trash fa-2x"></i></a>
     </div>
     <div class="w3-col s10 m11 w3-panel">
-        <div class="w3-leftbar w3-margin-bottom" onclick="document.location='[% INCLUDE url_index action='object' id=object.id() %]';" style="cursor:pointer;">
+        <div class="w3-leftbar w3-margin-bottom" onclick="document.location='[% url({ action=>'object', object_id=>object.id() })%]';" style="cursor:pointer;">
             <div class="w3-margin-left">
                 [% object.name({ markdown => 1 }) %]<br />
                 [% INCLUDE mod_date %]
