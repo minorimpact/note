@@ -51,7 +51,6 @@ sub new {
     return $self;
 }
 
-
 sub churn {
     my $params = shift || return;
 
