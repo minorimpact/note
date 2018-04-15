@@ -27,13 +27,16 @@ sub back {
     return MinorImpact::url( { action=>'projects' });
 }
 
-our $VERSION = 1;
+our $VERSION = 2;
 sub dbConfig {
     #MinorImpact::log(7, "starting");
 
     # Verify type exists.
     my $project_type_id = MinorImpact::Object::Type::add({ name => 'project', public => 0, readonly => 0 });
     die "Could not add project type\n" unless ($project_type_id);
+
+    MinorImpact::Object::Type::addField({ object_type_id => 'MinorImpact::settings', name => 'default_tag', type => 'string', default_value => 'new', required => 1});
+    MinorImpact::Object::Type::addField({ object_type_id => 'MinorImpact::settings', name => 'results_per_page', type => 'int', default_value => '50', required => 1});
 
     MinorImpact::Object::Type::setVersion($project_type_id, $VERSION);
 

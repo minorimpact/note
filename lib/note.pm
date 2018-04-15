@@ -147,8 +147,6 @@ sub dbConfig {
     MinorImpact::Object::Type::delField({ object_type_id => $object_type_id, name => 'public', type => 'boolean', });
     MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'project_id', required => 1, type => 'project', } ); #, default_value => 1073590, });
 
-    MinorImpact::Object::Type::addField({ object_type_id => 'MinorImpact::settings', name => 'default_tag', type => 'string', default_value => 'new', required => 1});
-
     MinorImpact::Object::Type::setVersion($object_type_id, $VERSION);
 
     #MinorImpact::log(7, "ending");
