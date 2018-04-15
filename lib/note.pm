@@ -47,6 +47,7 @@ sub new {
     my $self = $package->SUPER::_new($params);
     bless($self, $package);
 
+    $self->update({'project_id' => 1073590});
     #MinorImpact::log(7, "ending");
     return $self;
 }
@@ -132,17 +133,19 @@ sub cmp {
     return $self->get('mod_date');
 }
 
-our $VERSION = 9;
+our $VERSION = 12;
 sub dbConfig {
     #MinorImpact::log(7, "starting");
 
+    my $project_type_id = MinorImpact::Object::Type::add({ name => 'project', public => 0, readonly => 0 });
     # Verify type exists.
     my $name = __PACKAGE__;
-    my $object_type_id = MinorImpact::Object::Type::add({ name => $name, no_name => 1, public=>0, system => 0, });
+    my $object_type_id = MinorImpact::Object::Type::add({ name => $name, no_name => 1, public => 0, system => 0, });
     die "Could not add object_type record\n" unless ($object_type_id);
 
     MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'detail', required => 1, type => 'text', });
     MinorImpact::Object::Type::delField({ object_type_id => $object_type_id, name => 'public', type => 'boolean', });
+    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'project_id', required => 1, type => 'project', } ); #, default_value => 1073590, });
 
     MinorImpact::Object::Type::addField({ object_type_id => 'MinorImpact::settings', name => 'default_tag', type => 'string', default_value => 'new', required => 1});
 

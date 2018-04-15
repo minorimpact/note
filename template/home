@@ -1,10 +1,20 @@
 [% INCLUDE header %]
 
-<!-- TEMPLATE:default.index -->
-[% IF object %]
-    [% INCLUDE object_column %]
-[% ELSE %]
-    [% INCLUDE list_object %]
+<!-- TEMPLATE:note.home -->
+
+[% IF user %]
+<form class='w3-bar w3-padding-16' id=noteform name=noteform method=POST>
+    <input type=hidden name=a       value='add'>
+    <input type=hidden name=type_id value='note'>
+    <input id=hidden_submit type=hidden name=hidden_submit value=1>
+    <textarea class='w3-input w3-border' id=detail name=detail placeholder="New note..." rows=3></textarea>
+</form>
 [% END %]
+
+[% FOR object_type_id IN types %]
+    <a href="[% url({ action=>'add', object_type_id=>object_type_id })  %]" class="w3-bar-item w3-button">Add [% typeName(object_type_id) %]</a>
+[% END %]
+
+[% INCLUDE list_object %]
 
 [% INCLUDE footer %]

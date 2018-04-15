@@ -1,0 +1,8 @@
+<div class="w3-row">
+    <div class="w3-col s3">
+        <a class="w3-bar-item w3-button" href='[% INCLUDE url_index action='projects' reset=1 %]'><i class="fa fa-sign-out fa-2x"></i></a>
+    </div>
+    <div class="w3-col s9">
+        <a class="w3-bar-item w3-button" href='[% INCLUDE url_index action='projects' reset=1 %]'>Projects</a>
+    </div>
+</div>
