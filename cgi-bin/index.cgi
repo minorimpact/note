@@ -4,6 +4,7 @@ use MinorImpact;
 use MinorImpact::Util;
 
 use note;
+use person;
 use project;
 
 my $MI = new MinorImpact({ https => 1 });
