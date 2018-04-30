@@ -47,7 +47,8 @@ sub new {
     my $self = $package->SUPER::_new($params);
     bless($self, $package);
 
-    $self->update({'project_id' => 1073590});
+    # FUCK YOU.
+    #$self->update({'project_id' => 1073590});
     #MinorImpact::log(7, "ending");
     return $self;
 }
@@ -133,7 +134,7 @@ sub cmp {
     return $self->get('mod_date');
 }
 
-our $VERSION = 12;
+our $VERSION = 13;
 sub dbConfig {
     #MinorImpact::log(7, "starting");
 

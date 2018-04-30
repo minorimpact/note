@@ -3,6 +3,7 @@
 use MinorImpact;
 use MinorImpact::Util;
 
+use location;
 use note;
 use person;
 use project;
@@ -20,6 +21,7 @@ sub add {
 
     my $project_id = getProjectID();
     if ($project_id) {
+        MinorImpact::log('debug', "Using project_id='$project_id'");
         $CGI->param('project_id', $project_id);
     }
 

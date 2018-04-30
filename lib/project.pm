@@ -27,7 +27,7 @@ sub back {
     return MinorImpact::url( { action=>'projects' });
 }
 
-our $VERSION = 6;
+our $VERSION = 7;
 sub dbConfig {
     #MinorImpact::log(7, "starting");
 
@@ -41,6 +41,8 @@ sub dbConfig {
     # Bootstrap additional types.
     MinorImpact::Object::Type::add({ name => 'person', public => 0, readonly => 0 });
     person::dbConfig();
+    MinorImpact::Object::Type::add({ name => 'location', public => 0, readonly => 0 });
+    location::dbConfig();
 
     MinorImpact::Object::Type::setVersion($project_type_id, $VERSION);
     #MinorImpact::log(7, "ending");
