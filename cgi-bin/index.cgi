@@ -84,20 +84,20 @@ sub home {
     my $MINORIMPACT = shift || return;
     my $params = shift || {};
 
-    my $CGI = MinorImpact::cgi();
-    my $user = MinorImpact::user({ force => 1 });
-    my $object_type_id = MinorImpact::Object::typeID('note');
+    #my $CGI = MinorImpact::cgi();
+    #my $user = MinorImpact::user({ force => 1 });
+    #my $object_type_id = MinorImpact::Object::typeID('note');
 
     my $local_params = cloneHash($params);
-    my $settings = $user->settings();
+    #my $settings = $user->settings();
 
     my $project_id = getProjectID();
     if ($project_id) {
         $local_params->{query}{project_id} =  $project_id;
     }
 
-    my $search = MinorImpact::session('search');
-    my $collection_id = MinorImpact::session('collection_id');
+    #my $search = MinorImpact::session('search');
+    #my $collection_id = MinorImpact::session('collection_id');
 
     #if (!$search && !$collection_id) {
     #    $search = $default_search;
