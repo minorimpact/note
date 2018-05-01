@@ -1,6 +1,6 @@
 [% IF projects.size() > 0 %]
     <select name=project_id>
-        <option value=''>All</option>
+        <option>All</option>
         [% FOREACH project IN projects %]
             <option value='[% project.id() %]'[% IF project_id && project.id() == project_id %] selected[% END -%]>[% project.name() %]</option>
         [% END %]

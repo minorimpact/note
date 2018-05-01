@@ -162,7 +162,10 @@ sub search {
     my @projects = $user->getObjects( { query => { object_type_id => 'project' } });
     $local_params->{tt_variables}{projects} = \@projects;
 
-    if ($CGI->param('project_id')) {
+    $CGI->param('project_id', getProjectID()) unless ($CGI->param('project_id'));
+    if ($CGI->param('project_id') eq 'All') {
+        $CGI->param('project_id', undef);
+    } elsif ($CGI->param('project_id')) {
         # Add application specific search criteria to the parameter object that gets
         #   sent to the the default search function.
         $local_params->{tt_variables}{project_id} = $CGI->param('project_id');
