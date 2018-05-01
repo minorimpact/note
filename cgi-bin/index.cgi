@@ -9,7 +9,7 @@ use person;
 use project;
 
 my $MI = new MinorImpact({ https => 1 });
-$MI->www({ actions => { add => \&add, archive => \&archive, home => \&home, object => \&object, projects => \&projects} });
+$MI->www({ actions => { add => \&add, archive => \&archive, home => \&home, object => \&object, projects => \&projects, search => \&search } });
 
 # override the default 'add' action to get the default project id and assign to the new object.
 sub add {
@@ -147,5 +147,28 @@ sub projects {
         objects => [ @projects ],
         object_type_id => 'project',
     });
+}
+
+sub search {
+    my $MINORIMPACT = shift || return;
+    my $params = shift || {};
+    my $user = MinorImpact::user({ force => 1 });
+
+    my $CGI = MinorImpact::cgi();
+    my $local_params = cloneHash($params);
+
+    # Get a list of projects to feed to the custom dropdown in the search_filter_site
+    #   template.
+    my @projects = $user->getObjects( { query => { object_type_id => 'project' } });
+    $local_params->{tt_variables}{projects} = \@projects;
+
+    if ($CGI->param('project_id')) {
+        # Add application specific search criteria to the parameter object that gets
+        #   sent to the the default search function.
+        $local_params->{tt_variables}{project_id} = $CGI->param('project_id');
+        $local_params->{query}->{project_id} = $CGI->param('project_id');
+    }
+
+    return MinorImpact::WWW::search($MINORIMPACT, $local_params);
 }
 
