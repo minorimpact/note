@@ -9,7 +9,7 @@ use person;
 use project;
 
 my $MI = new MinorImpact({ https => 1 });
-$MI->www({ actions => { add => \&add, archive => \&archive, home => \&home, object => \&object, projects => \&projects, search => \&search } });
+$MI->www({ actions => { add => \&add, archive => \&archive, home => \&home, object => \&object, projects => \&projects, save_search => \&save_search, search => \&search } });
 
 # override the default 'add' action to get the default project id and assign to the new object.
 sub add {
@@ -147,6 +147,22 @@ sub projects {
         objects => [ @projects ],
         object_type_id => 'project',
     });
+}
+
+sub save_search {
+    my $MINORIMPACT = shift || return;
+    my $params = shift || {};
+
+    #MinorImpact::debug(1);
+    MinorImpact::log('debug', 'starting');
+    my $local_params = cloneHash($params);
+    my $CGI = MinorImpact::cgi();
+    MinorImpact::log('debug', "\$CGI->param('project_id')='" . $CGI->param('project_id') . "'");
+    $local_params->{search_filter}{project_id} = $CGI->param('project_id') if ($CGI->param('project_id') && $CGI->param('project_id') ne 'All');
+
+    MinorImpact::log('debug', 'ending');
+    #MinorImpact::debug(0);
+    return MinorImpact::WWW::save_search($MINORIMPACT, $local_params);
 }
 
 sub search {
