@@ -67,7 +67,7 @@ sub form {
     }
     $local_params->{google_map_key} = 'AIzaSyAbBJbTvC0xXtzzHYuTN7Bspu93ECbR8EE';
     my $string;
-    $string .= "<table><tr><td>$super_string</td><td><div id='map'></div></td></tr></table>\n";
+    $string .= "<table height=100% width=100%><tr><td>$super_string</td><td width=70%><div id='map'></div></td></tr></table>\n";
     if ($self) {
         $string .= $self->map($local_params);
     } else {
@@ -112,7 +112,7 @@ sub map {
     my $map = <<SCRIPT;
 <script>
     var map; 
-    var markerl
+    var marker;
     function initMap() { 
         map = new google.maps.Map(document.getElementById('map'), { $map_opts }); 
         marker = new google.maps.Marker({
