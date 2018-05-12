@@ -77,15 +77,55 @@ sub form {
     return $string;
 }
 
+sub marker {
+    my $self = shift || return;
+    my $params = shift || {};
+
+    my $marker;
+
+    my $lat = $self->get('lat') if ($self->get('lat'));
+    my $lon = $self->get('lon') if ($self->get('lon'));
+    $name = $self->name();
+    $name =~s/'/\\'/g;
+    $marker = {lat => $lat, lon =>$lon, name => $name };
+    return $marker;
+}
+
+sub markerCode {
+    my $self = shift || return;
+    my $params = shift || {};
+
+    my $marker = $self->marker();
+    my $marker_code;
+     $marker_code = "marker = new google.maps.Marker({ position: {lat:" . $marker->{lat} . ", lng:" . $marker->{lon} . "}, map: map, title: '" . $marker->{name} . "' }); bounds.extend(marker.position);";
+}
+
+sub stringType {
+    my $self = shift || return;
+    my $params = shift || return;
+
+    if (ref($params) eq "HASH") {
+        $string_type = $params->{string_type};
+    } else {
+        $string_type = $params;
+    }
+
+    return 1 if ($string_type eq 'map');
+    return $self->SUPER::stringType($params);
+}
+
 sub toString {
     my $self = shift || return;
     my $params = shift || {};
 
     my $local_params = cloneHash($params);
     $local_params->{google_map_key} = 'AIzaSyAbBJbTvC0xXtzzHYuTN7Bspu93ECbR8EE';
-    my $string = $self->SUPER::toString($local_params);
+    my $string;
 
-    if ($local_params->{detail} || $local_params->{format} eq 'column') {
+    if ($local_params->{format} eq 'map') {
+        $string = $self->get('lat') . "," . $self->get('lon');
+    } elsif ($local_params->{detail} || $local_params->{format} eq 'column') {
+        $string = $self->SUPER::toString($local_params);
         $string = "<table><tr><td>$string</td><td>Map:<div id='map'></div></td></tr></table>\n";
         $string .= $self->map($local_params);
     }
@@ -101,43 +141,55 @@ sub map {
         undef($self);
     }
 
-    my $lat = ($self?$self->get('lat'):'') || "38.68";
-    my $lon = ($self?$self->get('lon'):'') || "-98.21";
-    my $name = ($self?$self->name():$params->{name}) || '';
-    $name =~s/'/\\'/g;
-    my $map_opts = "center: {lat: $lat, lng: $lon}, zoom: 8, tilt: 0";
-    unless ($params->{edit}) {
-        $map_opts .= ", draggable: false, streetViewControl: false, scrollwheel: false";
+    my $edit_script;
+    my $name;
+    
+    my @markers;
+
+    if ($self) {
+        my $lat = $self->get('lat') if ($self->get('lat')); 
+        my $lon = $self->get('lon') if ($self->get('lon'));
+        $name = $self->name();
+        $name =~s/'/\\'/g;
+        if ($lat && $lon) {
+            push(@markers, {lat => $lat, lon =>$lon, name => $name });
+        }
+    } else {
+        push(@markers, {lat => "38.68", lon =>"-98.21" });
     }
-    my $map = <<SCRIPT;
-<script>
-    var map; 
-    var marker;
-    function initMap() { 
-        map = new google.maps.Map(document.getElementById('map'), { $map_opts }); 
-        marker = new google.maps.Marker({
-            position: {lat: $lat, lng: $lon},
-            map: map,
-            title: '$name'
+    if ($params->{edit}) {
+        $edit_script = <<SCRIPT;
+        google.maps.event.addListener(map, "rightclick", function(event) {
+            var lat = event.latLng.lat();
+            var lng = event.latLng.lng();
+            \$("#lat").val(lat);
+            \$("#lon").val(lng);
+            marker.setMap(null);
+            marker = new google.maps.Marker({
+                position: {lat: lat, lng: lng},
+                map: map,
+                title: '$name'
+            });
         });
 SCRIPT
-    if ($params->{edit}) {
-        $map .= <<SCRIPT;
-            google.maps.event.addListener(map, "rightclick", function(event) {
-                var lat = event.latLng.lat();
-                var lng = event.latLng.lng();
-                \$("#lat").val(lat);
-                \$("#lon").val(lng);
-                marker.setMap(null);
-                marker = new google.maps.Marker({
-                    position: {lat: lat, lng: lng},
-                    map: map,
-                    title: '$name'
-                });
-            });
-SCRIPT
     }
-    $map .= <<SCRIPT;
+
+    my $map_opts;
+    my $markers;
+    foreach my $marker (@markers) {
+        $markers .= " marker = new google.maps.Marker({ position: {lat:" . $marker->{lat} .", lng:" . $marker->{lon} . "}, map: map, title: '" . $marker->{name} . "' });\n";
+        $map_opts = "center: {lat:" . $marker->{lat} .", lng:" . $marker->{lon} . "}" unless ($map_opts);
+    }
+    $map_opts .= ", zoom: 8, tilt: 0";
+    $map_opts .= ", draggable: false, streetViewControl: false, scrollwheel: false" if ($self && !$params->{edit});
+    my $map = <<SCRIPT;
+<script>
+    var map;
+    var marker;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), { $map_opts });
+        $markers
+        $edit_script
     }
 </script> 
 <script src='https://maps.googleapis.com/maps/api/js?key=$params->{google_map_key}&callback=initMap' async defer></script>

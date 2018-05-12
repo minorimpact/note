@@ -5,4 +5,8 @@
             <option value='[% project.id() %]'[% IF project_id && project.id() == project_id %] selected[% END -%]>[% project.name() %]</option>
         [% END %]
     </select>
+    <select name=list_type>
+        <option value='string'>Default</option>
+        <option value='map'>Map</option>
+    </select>
 [% END %]

@@ -1,3 +1,9 @@
+html,
+body,
+table,
+tbody,
+tr,
+td,
 #map {
     height: 100%;
 }
