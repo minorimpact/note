@@ -1,0 +1,30 @@
+<!-- TEMPLATE: note.list_object -->
+
+[% INCLUDE list_object_site %]
+
+[% IF list_type == "map" %]
+<div style='height:80vh;width:80vw;' id='map-container'>
+    <div id='map'></div>
+</div>
+<script>
+    var map;
+    var marker;
+    function initMap() {
+        var bounds = new google.maps.LatLngBounds();
+        map = new google.maps.Map(document.getElementById('map'), {tilt: 0 });
+    [% FOREACH object IN objects %]
+        [% object.markerCode() %]
+    [% END %]
+        map.fitBounds(bounds);
+    }
+</script> 
+<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAbBJbTvC0xXtzzHYuTN7Bspu93ECbR8EE&callback=initMap' async defer></script>
+[% ELSE %]
+    [% INCLUDE pagination %]
+
+    [% FOREACH object IN objects %]
+        [% INCLUDE object_list %]
+    [% END %]
+
+    [% INCLUDE pagination %]
+[% END %]

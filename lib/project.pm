@@ -27,9 +27,10 @@ sub back {
     return MinorImpact::url( { action=>'projects' });
 }
 
-our $VERSION = 7;
+our $VERSION = 10;
 sub dbConfig {
-    #MinorImpact::log(7, "starting");
+    MinorImpact::debug(1);
+    MinorImpact::log(7, "starting");
 
     # Verify type exists.
     my $project_type_id = MinorImpact::Object::Type::add({ name => 'project', public => 0, readonly => 0 });
@@ -39,13 +40,30 @@ sub dbConfig {
     MinorImpact::Object::Type::addField({ object_type_id => 'MinorImpact::settings', name => 'results_per_page', type => 'int', default_value => '50', required => 1});
 
     # Bootstrap additional types.
-    MinorImpact::Object::Type::add({ name => 'person', public => 0, readonly => 0 });
-    person::dbConfig();
-    MinorImpact::Object::Type::add({ name => 'location', public => 0, readonly => 0 });
-    location::dbConfig();
+    my $object_type_id = MinorImpact::Object::typeID('person');
+    unless ($object_type_id) {
+        MinorImpact::Object::Type::add({ name => 'person', public => 0, readonly => 0 });
+        person::dbConfig();
+    }
+    my $object_type_id = MinorImpact::Object::typeID('location');
+    unless ($object_type_id) {
+        MinorImpact::Object::Type::add({ name => 'location', public => 0, readonly => 0 });
+        location::dbConfig();
+    }
+    my $object_type_id = MinorImpact::Object::typeID('bookmark');
+    unless ($object_type_id) {
+        MinorImpact::Object::Type::add({ name => 'bookmark', public => 0, readonly => 0 });
+        bookmark::dbConfig();
+    }
+    my $object_type_id = MinorImpact::Object::typeID('thing');
+    unless ($object_type_id) {
+        MinorImpact::Object::Type::add({ name => 'thing', public => 0, readonly => 0 });
+        thing::dbConfig();
+    }
 
     MinorImpact::Object::Type::setVersion($project_type_id, $VERSION);
-    #MinorImpact::log(7, "ending");
+    MinorImpact::log(7, "ending");
+    MinorImpact::debug(0);
     return;
 }
 

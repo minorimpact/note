@@ -3,10 +3,12 @@
 use MinorImpact;
 use MinorImpact::Util;
 
+use bookmark;
 use location;
 use note;
 use person;
 use project;
+use thing;
 
 my $MI = new MinorImpact({ https => 1 });
 $MI->www({ actions => { add => \&add, archive => \&archive, home => \&home, object => \&object, projects => \&projects, save_search => \&save_search, search => \&search } });

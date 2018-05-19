@@ -49,7 +49,7 @@ sub form {
     my $self = shift || return;
     my $params = shift || {};
 
-    #MinorImpact::log(7, "starting");
+    MinorImpact::log(7, "starting");
     if ($self eq 'location') {
         undef($self);
     } elsif(ref($self) eq 'HASH') {
@@ -73,62 +73,7 @@ sub form {
     } else {
         $string .= location::map($local_params);
     }
-    #MinorImpact::log(7, "ending");
-    return $string;
-}
-
-sub marker {
-    my $self = shift || return;
-    my $params = shift || {};
-
-    my $marker;
-
-    my $lat = $self->get('lat') if ($self->get('lat'));
-    my $lon = $self->get('lon') if ($self->get('lon'));
-    $name = $self->name();
-    $name =~s/'/\\'/g;
-    $marker = {lat => $lat, lon =>$lon, name => $name };
-    return $marker;
-}
-
-sub markerCode {
-    my $self = shift || return;
-    my $params = shift || {};
-
-    my $marker = $self->marker();
-    my $marker_code;
-     $marker_code = "marker = new google.maps.Marker({ position: {lat:" . $marker->{lat} . ", lng:" . $marker->{lon} . "}, map: map, title: '" . $marker->{name} . "' }); bounds.extend(marker.position);";
-}
-
-sub stringType {
-    my $self = shift || return;
-    my $params = shift || return;
-
-    if (ref($params) eq "HASH") {
-        $string_type = $params->{string_type};
-    } else {
-        $string_type = $params;
-    }
-
-    return 1 if ($string_type eq 'map');
-    return $self->SUPER::stringType($params);
-}
-
-sub toString {
-    my $self = shift || return;
-    my $params = shift || {};
-
-    my $local_params = cloneHash($params);
-    $local_params->{google_map_key} = 'AIzaSyAbBJbTvC0xXtzzHYuTN7Bspu93ECbR8EE';
-    my $string;
-
-    if ($local_params->{format} eq 'map') {
-        $string = $self->get('lat') . "," . $self->get('lon');
-    } elsif ($local_params->{detail} || $local_params->{format} eq 'column') {
-        $string = $self->SUPER::toString($local_params);
-        $string = "<table><tr><td>$string</td><td>Map:<div id='map'></div></td></tr></table>\n";
-        $string .= $self->map($local_params);
-    }
+    MinorImpact::log(7, "ending");
     return $string;
 }
 
@@ -191,10 +136,81 @@ SCRIPT
         $markers
         $edit_script
     }
+    var geocoder;
+
+    function codeAddress() {
+        var address = document.getElementById('address').value;
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == 'OK') {
+                map.setCenter(results[0].geometry.location);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                });
+            } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    }
 </script> 
 <script src='https://maps.googleapis.com/maps/api/js?key=$params->{google_map_key}&callback=initMap' async defer></script>
 SCRIPT
     return $map;
+}
+
+sub marker {
+    my $self = shift || return;
+    my $params = shift || {};
+
+    my $marker;
+
+    my $lat = $self->get('lat') if ($self->get('lat'));
+    my $lon = $self->get('lon') if ($self->get('lon'));
+    $name = $self->name();
+    $name =~s/'/\\'/g;
+    $marker = {lat => $lat, lon =>$lon, name => $name };
+    return $marker;
+}
+
+sub markerCode {
+    my $self = shift || return;
+    my $params = shift || {};
+
+    my $marker = $self->marker();
+    my $marker_code;
+     $marker_code = "marker = new google.maps.Marker({ position: {lat:" . $marker->{lat} . ", lng:" . $marker->{lon} . "}, map: map, title: '" . $marker->{name} . "' }); bounds.extend(marker.position);";
+}
+
+sub stringType {
+    my $self = shift || return;
+    my $params = shift || return;
+
+    if (ref($params) eq "HASH") {
+        $string_type = $params->{string_type};
+    } else {
+        $string_type = $params;
+    }
+
+    return 1 if ($string_type eq 'map');
+    return $self->SUPER::stringType($params);
+}
+
+sub toString {
+    my $self = shift || return;
+    my $params = shift || {};
+
+    my $local_params = cloneHash($params);
+    $local_params->{google_map_key} = 'AIzaSyAbBJbTvC0xXtzzHYuTN7Bspu93ECbR8EE';
+    my $string;
+
+    if ($local_params->{format} eq 'map') {
+        $string = $self->get('lat') . "," . $self->get('lon');
+    } elsif ($local_params->{detail} || $local_params->{format} eq 'column') {
+        $string = $self->SUPER::toString($local_params);
+        $string = "<table><tr><td>$string</td><td>Map:<div id='map'></div></td></tr></table>\n";
+        $string .= $self->map($local_params);
+    }
+    return $string;
 }
 
 
