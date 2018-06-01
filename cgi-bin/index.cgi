@@ -12,7 +12,7 @@ use project;
 use thing;
 
 my $MI = new MinorImpact({ https => 1 });
-$MI->www({ actions => { add => \&add, archive => \&archive, home => \&home, object => \&object, projects => \&projects, save_search => \&save_search, search => \&search } });
+$MI->www({ actions => { add => \&add, archive => \&archive, home => \&projects, object => \&object, projects => \&projects, save_search => \&save_search, search => \&search } });
 
 # override the default 'add' action to get the default project id and assign to the new object.
 sub add {
