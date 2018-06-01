@@ -4,6 +4,7 @@ use MinorImpact;
 use MinorImpact::Util;
 
 use bookmark;
+use entry;
 use location;
 use note;
 use person;
