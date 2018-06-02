@@ -19,7 +19,8 @@ sub new {
 
     if (ref($params) eq "HASH") {
         if (!$params->{name}) {
-            $params->{name} = substr($params->{detail}, 0, 15) ."-". int(rand(10000) + 1);
+            $params->{name} = toMysqlDate();
+            $params->{name} =~s/:[0-9][0-9]$//;
         }
 
         my @tags;
