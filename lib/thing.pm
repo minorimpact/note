@@ -14,12 +14,12 @@ our @ISA = qw(MinorImpact::Object);
 sub new {
     my $package = shift;
     my $params = shift;
-    #MinorImpact::log(7, "starting");
+    MinorImpact::log('debug', "starting");
 
     my $self = $package->SUPER::_new($params);
     bless($self, $package);
 
-    #$self->log(7, "ending");
+    MinorImpact::log('debug', "ending");
     return $self;
 }
 
@@ -38,19 +38,19 @@ sub cmp {
 
 our $VERSION = 2;
 sub dbConfig {
-    MinorImpact::log(7, "starting");
+    MinorImpact::log('debug', "starting");
 
     # Verify type exists.
-    my $object_type_id = MinorImpact::Object::Type::add({ name => 'thing', public => 1 });
-    die "Could not add object_type record\n" unless ($object_type_id);
+    my $object_type = new MinorImpact::Object::Type({ name => 'thing', public => 1 });
+    die "Could not add object_type record\n" unless ($object_type);
 
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'detail', type => 'text', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'project_id', type => 'project', required => 1, });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'location_id', type => 'location', required => 1, });
+    $object_type->addField({ name => 'detail', type => 'text', });
+    $object_type->addField({ name => 'project_id', type => 'project', required => 1, });
+    $object_type->addField({ name => 'location_id', type => 'location', required => 1, });
 
-    MinorImpact::Object::Type::setVersion($object_type_id, $VERSION);
+    $object_type->setVersion($VERSION);
 
-    MinorImpact::log(7, "ending");
+    MinorImpact::log('debug', "ending");
     return;
 }
 

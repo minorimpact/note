@@ -19,8 +19,8 @@ sub add {
     my $MINORIMPACT = shift || return;
     my $params = shift || {};
 
-    #MinorImpact::log(7, "starting");
-    my $CGI = $MINORIMPACT->cgi();
+    MinorImpact::log('debug', "starting");
+    my $CGI = MinorImpact::cgi();
 
     my $project_id = getProjectID();
     if ($project_id) {
@@ -29,14 +29,15 @@ sub add {
     }
 
     MinorImpact::WWW::add($MINORIMPACT, $params);
+    MinorImpact::log('debug', "ending");
 }
 
 sub archive {
     my $MINORIMPACT = shift || return;
     my $params = shift || {};
 
-    #MinorImpact::log(7, "starting");
-    my $CGI = $MINORIMPACT->cgi();
+    MinorImpact::log('debug', "starting");
+    my $CGI = MinorImpact::cgi();
 
     my $collection_id = $CGI->param('collection_id') || $CGI->param('cid');
     my $object_id = $CGI->param('object_id') || $CGI->param('id') || $MINORIMPACT->redirect();
@@ -57,9 +58,12 @@ sub archive {
     $object->update({ tags => join(",", @tags) });
 
     $MINORIMPACT->redirect({ action => 'home', collection_id => $collection_id, search => $search });
+    MinorImpact::log('debug', "ending");
 }
 
 sub getProjectID {
+    MinorImpact::log('debug', "starting");
+
     my $user = MinorImpact::user({ force => 1 });
     my $project_id = MinorImpact::session('project_id');
 

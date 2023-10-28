@@ -51,22 +51,22 @@ sub cmp {
 
 our $VERSION = 1;
 sub dbConfig {
-    #MinorImpact::log(7, "starting");
+    MinorImpact::log('debug', "starting");
 
     # Verify type exists.
-    my $object_type_id = MinorImpact::Object::Type::add({ name => 'person', plural => 'people', no_name=> 1, public => 0 });
-    die "Could not add object_type record\n" unless ($object_type_id);
+    my $object_type = new MinorImpact::Object::Type({ name => 'person', plural => 'people', no_name=> 1, public => 0 });
+    die "Could not add object_type record\n" unless ($object_type);
 
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'birthday',   type => 'datetime', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'detail',     type => 'text', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'first_name', type => 'string', description => 'Given name' });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'last_name',  type => 'string', description => 'Family name' });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'nickname',   type => '@string', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'project_id', type => 'project', required => 1});
+    $object_type->addField({ name => 'birthday',   type => 'datetime', });
+    $object_type->addField({ name => 'detail',     type => 'text', });
+    $object_type->addField({ name => 'first_name', type => 'string', description => 'Given name' });
+    $object_type->addField({ name => 'last_name',  type => 'string', description => 'Family name' });
+    $object_type->addField({ name => 'nickname',   type => '@string', });
+    $object_type->addField({ name => 'project_id', type => 'project', required => 1});
 
-    MinorImpact::Object::Type::setVersion($object_type_id, $VERSION);
+    $object_type->setVersion($VERSION);
 
-    #MinorImpact::log(7, "ending");
+    MinorImpact::log('debug', "ending");
     return;
 }
 

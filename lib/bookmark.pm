@@ -44,22 +44,22 @@ sub new {
 
 our $VERSION = 2;
 sub dbConfig {
-    MinorImpact::log(7, "starting");
+    MinorImpact::log('debug', "starting");
 
     # Verify type exists.
-    my $object_type_id = MinorImpact::Object::Type::add({ name => 'bookmark', });
-    die "Could not add object_type record\n" unless ($object_type_id);
+    my $object_type = new MinorImpact::Object::Type({ name => 'bookmark', });
+    die "Could not add object_type record\n" unless ($object_type);
 
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'parse_date', type => 'datetime', readonly => 1,});
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'parse_text', type => 'text', readonly => 1,});
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'parse_version', type => 'string', readonly => 1,});
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'raw_html', type => 'text', hidden => 1, readonly => 1, });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'url', type => 'url', required => 1, });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'project_id', type => 'project', required => 1, });
+    $object_type->addField({ name => 'parse_date', type => 'datetime', readonly => 1,});
+    $object_type->addField({ name => 'parse_text', type => 'text', readonly => 1,});
+    $object_type->addField({ name => 'parse_version', type => 'string', readonly => 1,});
+    $object_type->addField({ name => 'raw_html', type => 'text', hidden => 1, readonly => 1, });
+    $object_type->addField({ name => 'url', type => 'url', required => 1, });
+    $object_type->addField({ name => 'project_id', type => 'project', required => 1, });
 
-    MinorImpact::Object::Type::setVersion($object_type_id, $VERSION);
+    $object_type->setVersion($VERSION);
 
-    MinorImpact::log(7, "ending");
+    MinorImpact::log('debug', "ending");
     return;
 }
 
@@ -88,7 +88,7 @@ sub toString {
     my $self = shift || return;
     my $params = shift || {};
 
-    my $local_params = cloneHash($params);
+    my $local_params = clone($params);
     my $string = $self->SUPER::toString($local_params);
     #my $tt = new MinorImpact()->templateToolkit();
     #if ($local_params->{column}) {

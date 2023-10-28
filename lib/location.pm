@@ -27,21 +27,21 @@ sub new {
 
 our $VERSION = 2;
 sub dbConfig {
-    #MinorImpact::log(7, "starting");
+    MinorImpact::log('debug', "starting");
 
     # Verify type exists.
-    my $object_type_id = MinorImpact::Object::Type::add({ name => 'location', public => 1 });
-    die "Could not add object_type record\n" unless ($object_type_id);
+    my $object_type = new MinorImpact::Object::Type({ name => 'location', public => 1 });
+    die "Could not add object_type record\n" unless ($object_type);
 
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'address',    type => 'string', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'detail',     type => 'text', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'lat',        type => 'float', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'lon',        type => 'float', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'project_id', type => 'project', required => 1});
+    $object_type->addField({ name => 'address',    type => 'string', });
+    $object_type->addField({ name => 'detail',     type => 'text', });
+    $object_type->addField({ name => 'lat',        type => 'float', });
+    $object_type->addField({ name => 'lon',        type => 'float', });
+    $object_type->addField({ name => 'project_id', type => 'project', required => 1});
 
-    MinorImpact::Object::Type::setVersion($object_type_id, $VERSION);
+    $object_type->setVersion($VERSION);
 
-    #MinorImpact::log(7, "ending");
+    MinorImpact::log('debug', "ending");
     return;
 }
 

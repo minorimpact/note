@@ -65,20 +65,20 @@ sub cmp {
 
 our $VERSION = 2;
 sub dbConfig {
-    #MinorImpact::log(7, "starting");
+    MinorImpact::log('debug', "starting");
 
     # Verify type exists.
     my $name = __PACKAGE__;
-    my $object_type_id = MinorImpact::Object::Type::add({ name => $name, plural=>'entries', public=>1 });
-    die "Could not add object_type record\n" unless ($object_type_id);
+    my $object_type = new MinorImpact::Object::Type({ name => $name, plural=>'entries', public=>1 });
+    die "Could not add object_type record\n" unless ($object_type);
 
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'content', required => 1, type => 'text', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'publish_date', required => 1, type => 'datetime', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'project_id', required => 1, type => 'project', });
+    $object_type->addField({ name => 'content', required => 1, type => 'text', });
+    $object_type->addField({ name => 'publish_date', required => 1, type => 'datetime', });
+    $object_type->addField({ name => 'project_id', required => 1, type => 'project', });
 
-    MinorImpact::Object::Type::setVersion($object_type_id, $VERSION);
+    $object_type->setVersion($VERSION);
 
-    #MinorImpact::log(7, "ending");
+    MinorImpact::log('debug', "ending");
     return;
 }
 

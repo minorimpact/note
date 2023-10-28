@@ -9,13 +9,14 @@ use MinorImpact;
 use MinorImpact::Object;
 use MinorImpact::User;
 use MinorImpact::Util;
+use MinorImpact::Util::String;
 
 our @ISA = qw(MinorImpact::Object);
 
 sub new {
     my $package = shift;
     my $params = shift;
-    #MinorImpact::log(7, "starting");
+    MinorImpact::log('debug', "starting");
 
     if (ref($params) eq "HASH") {
         if (!$params->{name}) {
@@ -49,14 +50,14 @@ sub new {
 
     # FUCK YOU.
     #$self->update({'project_id' => 1073590});
-    #MinorImpact::log(7, "ending");
+    MinorImpact::log('debug', "ending");
     return $self;
 }
 
 sub churn {
     my $params = shift || return;
 
-    #MinorImpact::log('debug', 'starting');
+    MinorImpact::log('debug', 'starting');
     use MinorImpact::Test;
 
     my $user = $params->{user} || return;
@@ -120,7 +121,7 @@ sub churn {
             }
         }
     }
-    #MinorImpact::log('debug', 'ending');
+    MinorImpact::log('debug', 'ending');
 }
 
 sub cmp {
@@ -136,32 +137,34 @@ sub cmp {
 
 our $VERSION = 13;
 sub dbConfig {
-    #MinorImpact::log(7, "starting");
+    MinorImpact::log('debug', "starting");
 
-    my $project_type_id = MinorImpact::Object::Type::add({ name => 'project', public => 0, readonly => 0 });
+    my $project_type = new MinorImpact::Object::Type({ name => 'project', public => 0, readonly => 0 });
     # Verify type exists.
     my $name = __PACKAGE__;
-    my $object_type_id = MinorImpact::Object::Type::add({ name => $name, no_name => 1, public => 0, system => 0, });
-    die "Could not add object_type record\n" unless ($object_type_id);
+    my $object_type = new MinorImpact::Object::Type({ name => $name, no_name => 1, public => 0, system => 0, });
+    die "Could not add object_type record\n" unless ($object_type);
 
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'detail', required => 1, type => 'text', });
-    MinorImpact::Object::Type::delField({ object_type_id => $object_type_id, name => 'public', type => 'boolean', });
-    MinorImpact::Object::Type::addField({ object_type_id => $object_type_id, name => 'project_id', required => 1, type => 'project', } ); #, default_value => 1073590, });
+    $object_type->addField({ name => 'detail', required => 1, type => 'text', });
+    $object_type->delField({ name => 'public', type => 'boolean', });
+    $object_type->addField({ name => 'project_id', required => 1, type => 'project', } ); #, default_value => 1073590, });
 
-    MinorImpact::Object::Type::setVersion($object_type_id, $VERSION);
+    $object_type->setVersion($VERSION);
 
-    #MinorImpact::log(7, "ending");
+    MinorImpact::log('debug', "ending");
     return;
 }
 
 sub name {
     my $self = shift || return;
     my $params = shift || {};
-    #MinorImpact::log('debug', 'starting');
+    MinorImpact::log('debug', 'starting');
 
     my $local_params = cloneHash($params);
     $local_params->{one_line} = 1;
     $local_params->{truncate} = 120;
+
+    MinorImpact::log('debug', "ending");
     return $self->get('detail', $local_params);
 }
 
